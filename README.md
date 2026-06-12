@@ -34,3 +34,5 @@ Ser la tienda en línea de referencia en videojuegos y consolas retro en la regi
 ### Estilo Visual
 Diseño retro pixeleado basado en [NES.css](https://nostalgic-css.github.io/NES.css/), evocando la estética de la era de 8 bits.
 
+### Iconos
+https://www.streamlinehq.com/icons/pixel

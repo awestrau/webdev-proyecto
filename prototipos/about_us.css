@@ -14,14 +14,16 @@ body {
 
 
 
-/*variables globales para colores generales de la pagina*/
 :root {
+    /*variables globales para colores generales de la pagina*/
     --color-bg-main: #FCF0D9;
     --color-bg-header: #54b3ea;
     --color-surface: #FEB914;
     --color-card: #6d7280;
     --color-text-main: #4a4d4f;
     --color-text-dark: #1a1f1f;
+
+    --font-family: "Jaro:Regular", sans-serif;
 }
 
 
