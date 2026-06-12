@@ -1,4 +1,6 @@
-# webdev-proyecto
+# PixelVault
+
+![logo](./doc/logo.jpg)
 
 **Universidad CENFOTEC**
 **Escuela de Ingeniería de Software**  
