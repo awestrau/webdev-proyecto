@@ -40,22 +40,18 @@ body {
 }
 
 .navbar-brand {
-    background-color: var(--color-bg-main);
-    padding: 0.1rem 0.8rem;
-    border-radius: 14px;
-    border: 3px solid;
-    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
-    cursor: context-menu;
+
 }
 
 .site-logo {
     height: 45px;
     width: auto;
     display: block;
+    border-radius: 14px;
 }
 
 .site-title {
-    font-size: 40px;
+    font-size: 60px;
     color: var(--color-text-dark);
     margin-left: 0.5rem;
 }
