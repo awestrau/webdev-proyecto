@@ -132,3 +132,18 @@ h1, h2, h3, h4, h5, h6,
     margin-top: 0.75rem;
     margin-bottom: 0;
 }
+
+/*-------------------------Footer----------------------------------*/
+
+.site-footer {
+    background-color: var(--color-bg-header);
+    border-top: 3px solid #3f444b;
+    margin-top: 3rem;
+}
+
+.footer-brand {
+    font-family: "Jaro", sans-serif;
+    font-size: 48px;
+    color: var(--color-text-dark);
+    letter-spacing: 4px;
+}
