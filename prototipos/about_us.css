@@ -24,3 +24,50 @@ body {
     --color-text-main: #4a4d4f;
     --color-text-dark: #1a1f1f;
 }
+
+
+
+/*-------------------------Header----------------------------------*/
+
+.titulo {
+    background-color: black;
+}
+
+
+
+.site-header {
+    background-color: var(--color-bg-header);
+    border-bottom: 1px solid #3f444b;
+}
+
+.navbar-brand {
+    background-color: #b2b5bc;
+    padding: 0.45rem 0.8rem;
+    border-radius: 14px;
+    border: 3px solid;
+    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+    cursor: context-menu;
+}
+
+.site-logo {
+    width: 170px;
+    height: auto;
+    display: block;
+
+}
+
+
+.search-form input {
+    width: 500px;
+    height: 45px;
+    border-radius: 14px;
+    background-color: #f8fafc;
+    border: 3px solid;
+    padding: 0.75rem 1rem;
+    box-shadow: 1px 1px 0px 0px, 2px 2px 0px 0px, 3px 3px 0px 0px, 4px 4px 0px 0px, 5px 5px 0px 0px;
+}
+
+.search-form input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(56, 189, 248, 0.25);
+}
