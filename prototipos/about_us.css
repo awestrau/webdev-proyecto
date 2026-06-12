@@ -28,15 +28,11 @@ body {
     --font-family: "Jaro:Regular", sans-serif;
 }
 
-
-
 /*-------------------------Header----------------------------------*/
 
 .titulo {
     background-color: black;
 }
-
-
 
 .site-header {
     background-color: var(--color-bg-header);
@@ -82,6 +78,7 @@ h1, h2, h3, h4, h5, h6,
 .valor-cuadro h3,
 #mision-vision h2 {
     font-family: "Jaro", sans-serif;
+    text-transform: uppercase;
 }
 
 #mision-vision h2 {
@@ -144,5 +141,6 @@ h1, h2, h3, h4, h5, h6,
     font-family: "Jaro", sans-serif;
     font-size: 48px;
     color: var(--color-text-dark);
+    text-transform: uppercase;
     letter-spacing: 4px;
 }
