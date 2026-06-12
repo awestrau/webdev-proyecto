@@ -1,14 +1,12 @@
 # webdev-proyecto
 
-## Universidad CENFOTEC
+**Universidad CENFOTEC**
 **Escuela de Ingeniería de Software**  
 **Curso:** Programación Web Avanzada (SOFT 12)  
 **Sección:** SCV1  
 **Periodo:** C2-2026  
 **Docente facilitador:** Pablo Monestel Gamboa
-
-## Integrantes
-
+**Integrantes:**
 - Andrés Westra Ureña
 - Jimena Montero Segura
 - Esteban Jesús Delgado González
