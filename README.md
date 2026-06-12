@@ -8,12 +8,11 @@
 **Sección:** SCV1  
 **Periodo:** C2-2026  
 **Docente facilitador:** Pablo Monestel Gamboa
+
 **Integrantes:**
 - Andrés Westra Ureña
 - Jimena Montero Segura
 - Esteban Jesús Delgado González
-
----
 
 ## Definición de la Empresa
 
