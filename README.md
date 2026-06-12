@@ -19,9 +19,6 @@
 ### Nombre
 **PixelVault** — Tienda en línea de videojuegos y consolas retro.
 
-### Logotipo
-> Pendiente de diseño. Estilo pixel art acorde a la identidad visual del proyecto.
-
 ### Misión
 Ofrecer a los amantes de los videojuegos una plataforma accesible y confiable para adquirir videojuegos y consolas retro, brindando una experiencia de compra nostálgica, intuitiva y segura que conecte a los usuarios con los clásicos que marcaron generaciones.
 
