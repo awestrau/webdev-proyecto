@@ -1,0 +1,26 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Open Sans", sans-serif;
+}
+
+body {
+    background-color: var(--color-bg-main);
+    color: black;
+    height: 100%;
+
+}
+
+
+
+/*variables globales para colores generales de la pagina*/
+:root {
+    --color-bg-main: #FCF0D9;
+    --color-bg-header: #FEB914;
+    --color-surface: #54b3ea;
+    --color-card: #6d7280;
+    --color-text-main: #4a4d4f;
+    --color-text-dark: #1a1f1f;
+}
