@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta — PixelVault</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" href="registro.css">
+
+</head>
+
+<body>
+
+      <header class="site-header sticky-top">
+        <nav class="navbar navbar-expand-lg" aria-label="Navegación principal">
+            <div class="container d-flex justify-content-center align-items-center">
+
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="../img/logo.jpg" alt="Logo de PixelVault" class="site-logo">
+                    <span class="site-title">PIXELVAULT</span>
+                </a>
+
+                <form id="search-form" class="search-form d-flex" role="search">
+                    <label for="search-product__input" class="visually-hidden">
+                        Buscar producto por nombre o categoría
+                    </label>
+
+                    <input id="search-product__input" class="form-control" type="search" placeholder="Buscar producto"
+                        aria-label="Buscar producto por nombre o categoría" autocomplete="off">
+
+                    <button class="btn btn-primary ms-2 button-85" type="submit">
+                        Buscar
+                    </button>
+                </form>
+
+            </div>
+        </nav>
+    </header>
+
+
+    <main>
+
+        <section class="container mt-5" id="registro-section">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+
+                    <div class="registro-card">
+                        <div class="registro-header text-center">
+                            <h2>Crear Cuenta</h2>
+                            <p>Unite a la comunidad retro de PixelVault</p>
+                        </div>
+
+                        <form id="registro-form" novalidate>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="registro-nombre" class="form-label">Nombre</label>
+                                    <input type="text" class="form-control form-input" id="registro-nombre"
+                                        placeholder="Tu nombre" required autocomplete="given-name">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="registro-apellido" class="form-label">Apellido</label>
+                                    <input type="text" class="form-control form-input" id="registro-apellido"
+                                        placeholder="Tu apellido" required autocomplete="family-name">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="registro-correo" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control form-input" id="registro-correo"
+                                    placeholder="correo@ejemplo.com" required autocomplete="email">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="registro-usuario" class="form-label">Nombre de usuario</label>
+                                <input type="text" class="form-control form-input" id="registro-usuario"
+                                    placeholder="Elegí un nombre de usuario" required autocomplete="username">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="registro-password" class="form-label">Contraseña</label>
+                                    <input type="password" class="form-control form-input" id="registro-password"
+                                        placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="registro-confirmar" class="form-label">Confirmar Contraseña</label>
+                                    <input type="password" class="form-control form-input" id="registro-confirmar"
+                                        placeholder="Repetí tu contraseña" required autocomplete="new-password">
+                                </div>
+                            </div>
+
+                            <div class="mb-4 form-check">
+                                <input type="checkbox" class="form-check-input" id="registro-terminos" required>
+                                <label class="form-check-label" for="registro-terminos">
+                                    Acepto los términos y condiciones
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 btn-submit">Crear Cuenta</button>
+                        </form>
+
+                        <div class="registro-footer text-center mt-4">
+                            <p>¿Ya tenés cuenta? <a href="#" class="registro-link">Iniciá sesión</a></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+        <div class="container text-center py-4">
+            <span class="footer-brand">PIXELVAULT</span>
+        </div>
+    </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!-- JavaScript propio -->
+    <script src="registro.js"></script>
+
+</body>
+
+</html>
