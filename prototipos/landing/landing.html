@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelVault — Tienda Retro</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- CSS propio -->
+    <link rel="stylesheet" href="landing.css">
+
+</head>
+
+<body>
+
+      <header class="site-header sticky-top">
+        <nav class="navbar navbar-expand-lg" aria-label="Navegación principal">
+            <div class="container d-flex justify-content-center align-items-center">
+
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <img src="../img/logo.jpg" alt="Logo de PixelVault" class="site-logo">
+                    <span class="site-title">PIXELVAULT</span>
+                </a>
+
+                <form id="search-form" class="search-form d-flex" role="search">
+                    <label for="search-product__input" class="visually-hidden">
+                        Buscar producto por nombre o categoría
+                    </label>
+
+                    <input id="search-product__input" class="form-control" type="search" placeholder="Buscar producto"
+                        aria-label="Buscar producto por nombre o categoría" autocomplete="off">
+
+                    <button class="btn btn-primary ms-2 button-85" type="submit">
+                        Buscar
+                    </button>
+                </form>
+
+            </div>
+        </nav>
+    </header>
+
+
+    <main>
+
+        <section class="hero">
+            <div class="container text-center">
+                <h1 class="hero-title">PixelVault</h1>
+                <p class="hero-subtitle">Revive los clásicos. Colecciona nostalgia.</p>
+                <p class="hero-desc">Tu tienda de confianza para videojuegos y consolas retro. Descubre títulos legendarios y piezas de colección que marcaron generaciones.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn-hero btn-hero-primary">Explorar Catálogo</a>
+                    <a href="#" class="btn-hero btn-hero-secondary">Crear Cuenta</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="container mt-5" id="productos-destacados">
+            <h2 class="section-title text-center">Productos Destacados</h2>
+            <div class="row g-4 mt-3">
+
+                <div class="col-md-4">
+                    <article class="producto-card">
+                        <div class="producto-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1597089542047-b9873d82d69b?w=400&h=250&fit=crop" alt="NES Classic Edition" class="producto-img">
+                        </div>
+                        <div class="producto-body">
+                            <span class="producto-consola">Consola</span>
+                            <h3 class="producto-nombre">NES Classic Edition</h3>
+                            <p class="producto-precio">₡45,000</p>
+                            <a href="#" class="btn btn-primary w-100">Ver Producto</a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="col-md-4">
+                    <article class="producto-card">
+                        <div class="producto-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1551107940-b86f3dd96445?w=400&h=250&fit=crop" alt="Super Mario World" class="producto-img">
+                        </div>
+                        <div class="producto-body">
+                            <span class="producto-juego">Juego</span>
+                            <h3 class="producto-nombre">Super Mario World</h3>
+                            <p class="producto-precio">₡12,500</p>
+                            <a href="#" class="btn btn-primary w-100">Ver Producto</a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="col-md-4">
+                    <article class="producto-card">
+                        <div class="producto-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1531394299180-d8072aa49b8d?w=400&h=250&fit=crop" alt="Game Boy Color" class="producto-img">
+                        </div>
+                        <div class="producto-body">
+                            <span class="producto-consola">Consola</span>
+                            <h3 class="producto-nombre">Game Boy Color</h3>
+                            <p class="producto-precio">₡30,000</p>
+                            <a href="#" class="btn btn-primary w-100">Ver Producto</a>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="container mt-5" id="categorias">
+            <h2 class="section-title text-center">Categorías</h2>
+            <div class="row g-4 mt-3">
+
+                <div class="col-md-4">
+                    <div class="categoria-card">
+                        <div class="categoria-icono">🕹️</div>
+                        <h3>Consolas</h3>
+                        <p>NES, SNES, Sega Genesis, Game Boy y más.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="categoria-card">
+                        <div class="categoria-icono">💾</div>
+                        <h3>Videojuegos</h3>
+                        <p>Cartuchos, discos y títulos clásicos originales.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="categoria-card">
+                        <div class="categoria-icono">🎮</div>
+                        <h3>Accesorios</h3>
+                        <p>Controles, cables, adaptadores y repuestos.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="container mt-5 mb-5" id="promo">
+            <div class="promo-banner text-center">
+                <h2>¿Listo para jugar?</h2>
+                <p>Regístrate y obtené envío gratis en tu primera compra.</p>
+                <a href="#" class="btn-hero btn-hero-primary">Registrarme Ahora</a>
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+        <div class="container text-center py-4">
+            <span class="footer-brand">PIXELVAULT</span>
+        </div>
+    </footer>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+
+    <!-- JavaScript propio -->
+    <script src="landing.js"></script>
+
+</body>
+
+</html>
