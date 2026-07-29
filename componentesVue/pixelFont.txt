@@ -1,0 +1,4 @@
+Para tener el pixel font, agregar lo siguiente en App.vue:
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+</style>
