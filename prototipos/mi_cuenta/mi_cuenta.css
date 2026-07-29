@@ -1,0 +1,505 @@
+body {
+    font-family: "Press Start 2P", system-ui;
+}
+
+
+:root {
+    --color-bg-main: #FCF0D9;
+    --color-bg-header: #54b3ea;
+    --color-surface: #FEB914;
+    --color-card: #6d7280;
+    --color-text-main: #4a4d4f;
+    --color-text-dark: #1a1f1f;
+
+
+
+
+
+
+
+    --account-blue: #54b4e5;
+    --account-blue-dark: #188fd1;
+    --account-black: #151515;
+    --account-panel: #d7d7d7;
+    --account-product-bg: #fff1d7;
+    --account-icon-bg: #dedede;
+    --account-muted: #6f6f6f;
+}
+
+
+
+
+
+
+/*-------------------------Header----------------------------------*/
+.site-header {
+    background-color: var(--color-bg-header);
+    border-bottom: 4px solid #111;
+}
+
+/* Área izquierda */
+.menu-button {
+    width: 52px;
+    height: 52px;
+    border: 3px solid #111;
+    background-color: #fff;
+    box-shadow: 3px 3px 0 #111;
+    padding: 0;
+}
+
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    image-rendering: pixelated;
+}
+
+.site-logo {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    margin-right: 10px;
+}
+
+.site-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #111;
+    letter-spacing: 1px;
+}
+
+
+
+/* Buscador */
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.search-input {
+    padding-right: 3rem;
+}
+
+.search-button {
+    position: absolute;
+    top: 50%;
+    right: 0.6rem;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+}
+
+.search-icon {
+    width: 30px;
+    height: 30px;
+    image-rendering: pixelated;
+
+}
+
+.search-icon:hover,
+.search-input-wrapper:hover {
+    box-shadow: 0px 4px 10px 2px var(--color-surface);
+    transform: scale(1.15);
+}
+
+
+
+/* Iconos en Navbar*/
+.nav-action-link {
+    color: #111;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.6rem;
+    line-height: 1.1;
+}
+
+.nav-action-icon-box {
+    width: 52px;
+    height: 52px;
+    margin-bottom: 0.35rem;
+    border: 3px solid #111;
+    background-color: #fff;
+    box-shadow: 3px 3px 0 #111;
+}
+
+.nav-action-icon {
+    width: 35px;
+    height: 35px;
+    image-rendering: pixelated;
+
+}
+
+.nav-action-link:hover .nav-action-icon-box,
+.nav-action-link:focus-visible .nav-action-icon-box {
+    background-color: var(--color-surface);
+    outline: 3px solid #111;
+    outline-offset: 3px;
+}
+
+.menu-button:hover,
+.menu-button:focus-visible {
+    background-color: var(--color-surface);
+    outline: 3px solid #111;
+    outline-offset: 3px;
+}
+
+.nav-action-link:focus-visible {
+    outline: none;
+}
+
+
+/* Desktop */
+@media (min-width: 992px) {
+    .search-form {
+        max-width: 600px;
+    }
+}
+
+.form-control:focus {
+    box-shadow: 0px 4px 10px 4px var(--color-surface);
+}
+
+
+
+
+
+
+
+
+/* =========================
+   ESTRUCTURA GENERAL
+========================= */
+
+.account-page {
+    min-height: 72vh;
+    background-color: #ffffff;
+    color: var(--account-black);
+}
+
+.account-page .container {
+    max-width: 1280px;
+}
+
+/* =========================
+   BIENVENIDA DE USUARIO
+========================= */
+
+.account-welcome {
+    background-color: var(--account-panel);
+}
+
+.account-welcome h1 {
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    line-height: 1.3;
+}
+
+.account-welcome p {
+    font-size: 0.7rem;
+}
+
+/* =========================
+   MENÚ LATERAL
+========================= */
+
+.account-sidebar {
+    background-color: var(--account-panel);
+    max-width: 60%;
+
+
+}
+
+
+
+.account-nav-button {
+    width: 100%;
+    min-height: 3.6rem;
+    padding: 0.75rem;
+    border: 0;
+    background-color: var(--account-blue);
+    color: var(--account-black);
+    font-family: inherit;
+    font-size: 0.7rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.account-nav-button:hover {
+    background-color: #69bee9;
+}
+
+.account-nav-button:focus-visible {
+    outline: 3px solid var(--account-blue-dark);
+    outline-offset: 2px;
+}
+
+.account-nav-button.is-active {
+    outline: 3px solid var(--account-blue-dark);
+    outline-offset: 0;
+}
+
+.account-nav-icon {
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    padding: 0.3rem;
+    background-color: var(--account-icon-bg);
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.account-sidebar-divider {
+    height: 5px;
+    background-color: var(--account-black);
+}
+
+/* =========================
+   CONTENIDO DE LA CUENTA
+========================= */
+
+.account-content-panel {
+    background-color: var(--account-panel);
+}
+
+/* =========================
+   TARJETA DE ORDEN
+========================= */
+
+.order-card {
+    background-color: var(--account-product-bg);
+}
+
+.order-card__header {
+    border-bottom: 4px solid var(--account-black);
+}
+
+.order-card__header h3 {
+    font-size: clamp(0.9rem, 4vw, 1.05rem);
+    font-weight: normal;
+}
+
+.order-card__header p {
+    font-size: 0.7rem;
+}
+
+.order-invoice-button {
+    padding: 0.55rem 0.7rem;
+    border: 0;
+    background-color: var(--account-icon-bg);
+    color: var(--account-black);
+    font-family: inherit;
+    font-size: 0.65rem;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.order-invoice-button:hover {
+    background-color: #c8c8c8;
+}
+
+.order-invoice-button:focus-visible {
+    outline: 3px solid var(--account-blue-dark);
+    outline-offset: 2px;
+}
+
+/* =========================
+   DETALLES DE ORDEN
+========================= */
+
+.order-card__details {
+    border-bottom: 4px solid var(--account-black);
+}
+
+.order-card__details dt,
+.order-card__details dd {
+    margin-bottom: 0.35rem;
+    font-size: 0.67rem;
+    font-weight: normal;
+    overflow-wrap: anywhere;
+}
+
+.order-card__details dt {
+    color: var(--account-black);
+}
+
+.order-card__details dd {
+    color: #2f2f2f;
+}
+
+/* =========================
+   PRODUCTOS DE LA ORDEN
+========================= */
+
+.order-card__products {
+    background-color: var(--account-product-bg);
+}
+
+.order-product-image {
+    flex: 0 0 auto;
+    width: 5.7rem;
+    height: 5.7rem;
+    background-color: var(--account-icon-bg);
+}
+
+.order-card__products h4 {
+    font-size: 0.67rem;
+    font-weight: normal;
+    overflow-wrap: anywhere;
+}
+
+.order-card__products p {
+    font-size: 0.62rem;
+    line-height: 1.45;
+}
+
+
+/* =========================
+   ESCRITORIO
+========================= */
+
+@media (min-width: 992px) {
+    .account-sidebar {
+        min-height: 58rem;
+        max-width: 100%;
+    }
+
+    .account-content-panel {
+        min-height: 58rem;
+    }
+
+    .account-nav-button {
+        min-height: 4rem;
+        padding: 0.85rem;
+    }
+
+    .order-card__header {
+        min-height: 4.1rem;
+    }
+
+    .order-card__details dt,
+    .order-card__details dd {
+        font-size: 0.72rem;
+    }
+
+    .order-product-image {
+        width: 5.8rem;
+        height: 5.8rem;
+    }
+}
+
+
+
+
+
+
+
+
+
+/*-------------------------Footer----------------------------------*/
+.site-footer {
+    background-color: var(--color-bg-header);
+    border-top: 3px solid #3f444b;
+    margin-top: 3rem;
+}
+
+.footer-brand {
+    display: inline-block;
+    font-size: 28px;
+    color: var(--color-text-dark);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.4;
+}
+
+.footer-tagline {
+    max-width: 680px;
+    margin: 1rem auto 0;
+    color: var(--color-text-dark);
+    font-size: 0.7rem;
+    line-height: 1.8;
+}
+
+.footer-column {
+    background-color: #fff;
+    border: 3px solid #111;
+    box-shadow: 4px 4px 0 #111;
+    padding: 1rem;
+}
+
+.footer-column h2 {
+    margin-bottom: 1rem;
+    color: var(--color-text-dark);
+    font-size: 0.85rem;
+}
+
+.footer-column ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.footer-column a,
+.footer-contact a,
+.footer-social a {
+    color: var(--color-text-dark);
+    text-decoration: none;
+}
+
+.footer-column a {
+    display: inline-block;
+    font-size: 0.65rem;
+    line-height: 1.6;
+}
+
+.footer-column a:hover,
+.footer-column a:focus-visible,
+.footer-contact a:hover,
+.footer-contact a:focus-visible,
+.footer-social a:hover,
+.footer-social a:focus-visible {
+    color: #111;
+    background-color: var(--color-surface);
+    outline: 3px solid #111;
+    outline-offset: 3px;
+}
+
+.footer-contact address {
+    color: var(--color-text-dark);
+    font-size: 0.65rem;
+    line-height: 1.6;
+}
+
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border: 3px solid #111;
+    background-color: #fff;
+    box-shadow: 3px 3px 0 #111;
+    overflow: hidden;
+}
+
+.footer-social .nes-icon {
+    margin: 0;
+    flex: 0 0 auto;
+    transform-origin: center;
+}
+
+.footer-bottom {
+    border-top: 3px solid #111;
+}
+
+.footer-bottom small {
+    color: var(--color-text-dark);
+    font-size: 0.6rem;
+    line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+    .footer-brand {
+        font-size: 40px;
+    }
+}
