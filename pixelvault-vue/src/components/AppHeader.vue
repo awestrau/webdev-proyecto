@@ -34,7 +34,7 @@ const navigationActions = [
         id: 'login',
         label: 'Ingresar',
         ariaLabel: 'Iniciar sesión',
-        href: '#',
+        to: '/login',
         icon: userIcon,
     },
 ]
@@ -61,12 +61,12 @@ function submitSearch() {
                         <img :src="menuIcon" alt="" class="nav-icon" aria-hidden="true">
                     </button>
 
-                    <a class="navbar-brand d-flex align-items-center m-0" href="/"
+                    <router-link class="navbar-brand d-flex align-items-center m-0" to="/"
                         aria-label="Ir a la página principal de PixelVault">
                         <img :src="logoImage" alt="" class="site-logo" aria-hidden="true">
 
                         <span class="site-title">PIXELVAULT</span>
-                    </a>
+                    </router-link>
                 </div>
 
                 <!-- Buscador -->
@@ -89,15 +89,29 @@ function submitSearch() {
 
                 <!-- Acciones -->
                 <div class="nav-actions ms-auto ms-lg-0 d-flex align-items-center gap-2 gap-sm-3">
-                    <a v-for="action in navigationActions" :key="action.id" :href="action.href"
-                        class="nav-action-link d-flex flex-column align-items-center" :aria-label="action.ariaLabel">
-                        <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
-                            aria-hidden="true">
-                            <img :src="action.icon" alt="" class="nav-action-icon">
-                        </span>
+                    <template v-for="action in navigationActions" :key="action.id">
+                        <router-link v-if="action.to" :to="action.to"
+                            class="nav-action-link d-flex flex-column align-items-center"
+                            :aria-label="action.ariaLabel">
+                            <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
+                                aria-hidden="true">
+                                <img :src="action.icon" alt="" class="nav-action-icon">
+                            </span>
 
-                        <span>{{ action.label }}</span>
-                    </a>
+                            <span>{{ action.label }}</span>
+                        </router-link>
+
+                        <a v-else :href="action.href"
+                            class="nav-action-link d-flex flex-column align-items-center"
+                            :aria-label="action.ariaLabel">
+                            <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
+                                aria-hidden="true">
+                                <img :src="action.icon" alt="" class="nav-action-icon">
+                            </span>
+
+                            <span>{{ action.label }}</span>
+                        </a>
+                    </template>
                 </div>
             </div>
         </nav>

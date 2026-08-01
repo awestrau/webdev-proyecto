@@ -18,14 +18,12 @@ function handleMenuToggle() {
     <AppHeader @search="handleSearch" @toggle-menu="handleMenuToggle" />
 
     <main id="main-content" class="flex-grow-1">
-      <!-- Aquí se mostrarán las páginas del proyecto. -->
+      <router-view />
     </main>
 
     <AppFooter />
   </div>
 </template>
-
-
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
