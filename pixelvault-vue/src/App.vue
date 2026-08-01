@@ -14,8 +14,6 @@ function handleMenuToggle() {
 </script>
 
 <template>
-  <link rel="stylesheet" href="./node_modules/nes.css/css/nes.min.css">
-
   <div class="min-vh-100 d-flex flex-column">
     <AppHeader @search="handleSearch" @toggle-menu="handleMenuToggle" />
 
