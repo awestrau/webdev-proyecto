@@ -1,0 +1,14 @@
+[
+    {
+        "id": "express",
+        "label": "Envío rápido",
+        "description": "2 días máximo de entrega",
+        "cost": 15
+    },
+    {
+        "id": "standard",
+        "label": "Envío normal",
+        "description": "4 a 6 días de entrega",
+        "cost": 4
+    }
+]

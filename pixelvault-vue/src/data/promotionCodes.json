@@ -1,0 +1,17 @@
+[
+    {
+        "code": "HOLIDAY",
+        "type": "fixed",
+        "value": 15
+    },
+    {
+        "code": "PLAYER20",
+        "type": "percentage",
+        "value": 20
+    },
+    {
+        "code": "RETRO10",
+        "type": "percentage",
+        "value": 10
+    }
+]

@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "brand": "Mastercard",
+        "last4": "9897",
+        "cardholderName": "Esteban Delgado González",
+        "expiry": "03/2028"
+    },
+    {
+        "id": 2,
+        "brand": "Visa",
+        "last4": "5322",
+        "cardholderName": "Esteban Delgado González",
+        "expiry": "03/2028"
+    },
+    {
+        "id": 3,
+        "brand": "Mastercard",
+        "last4": "0254",
+        "cardholderName": "Esteban Delgado González",
+        "expiry": "08/2028"
+    }
+]

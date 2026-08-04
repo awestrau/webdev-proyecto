@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "label": "Dirección 1",
+        "country": "Costa Rica",
+        "phone": "8888-1111",
+        "addressLine": "Barrio Escalante, 100 metros norte del parque",
+        "city": "San José",
+        "state": "San José",
+        "zipCode": "10101"
+    },
+    {
+        "id": 2,
+        "label": "Dirección 2",
+        "country": "Costa Rica",
+        "phone": "8888-2222",
+        "addressLine": "Residencial Los Robles, casa 25",
+        "city": "Heredia",
+        "state": "Heredia",
+        "zipCode": "40101"
+    },
+    {
+        "id": 3,
+        "label": "Dirección 3",
+        "country": "Costa Rica",
+        "phone": "8888-3333",
+        "addressLine": "Condominio Vista Verde, apartamento 8",
+        "city": "Cartago",
+        "state": "Cartago",
+        "zipCode": "30101"
+    }
+]

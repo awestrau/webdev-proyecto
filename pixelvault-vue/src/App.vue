@@ -2,10 +2,10 @@
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
 
-function handleSearch(searchTerm) {
+/*function handleSearch(searchTerm) {
   // Temporal hasta implementar la búsqueda de productos.
   console.log('Buscar producto:', searchTerm)
-}
+}*/
 
 function handleMenuToggle() {
   // Temporal hasta implementar el menú lateral.
@@ -15,16 +15,12 @@ function handleMenuToggle() {
 
 <template>
   <div class="min-vh-100 d-flex flex-column">
-    <AppHeader @search="handleSearch" @toggle-menu="handleMenuToggle" />
+    <AppHeader
+      @toggle-menu="handleMenuToggle"
+    />
 
-    <main id="main-content" class="flex-grow-1">
-      <router-view />
-    </main>
+    <RouterView />
 
     <AppFooter />
   </div>
 </template>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-</style>

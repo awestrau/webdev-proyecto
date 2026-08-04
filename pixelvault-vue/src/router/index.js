@@ -9,6 +9,9 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
+    redirect: {
+      name: 'products',
+    },
   },
   {
     path: '/login',
@@ -19,6 +22,38 @@ const routes = [
     path: '/registro',
     name: 'registro',
     component: RegistroView,
+  },
+  {
+    path: '/products',
+    name: 'products',
+    component: () => {
+      return import('../views/ProductListView.vue')
+    },
+  },
+  {
+    path: '/producto/:id',
+    name: 'product-detail',
+    component: () => {
+      return import('../views/ProductDetailView.vue')
+    },
+  },
+  {
+    path: '/mi_carrito',
+    name: 'cart',
+    component: () => {
+      return import('../views/MiCarritoView.vue')
+    },
+  },
+  {
+    path: '/guardados',
+    name: 'favorites',
+    component: () => {
+      return import('../views/FavoriteProductView.vue')
+    },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
   },
 ]
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+//import { ref } from 'vue'
 
 import menuIcon from '../assets/icons/menu.svg'
 import searchIcon from '../assets/icons/search.svg'
@@ -8,26 +8,30 @@ import cartIcon from '../assets/icons/cart.svg'
 import userIcon from '../assets/icons/user.svg'
 import logoImage from '../assets/images/logo.jpg'
 
-const emit = defineEmits({
+/*const emit = defineEmits({
     search: (searchTerm) => typeof searchTerm === 'string',
     'toggle-menu': () => true,
 })
 
-const searchText = ref('')
+const searchText = ref('')*/
 
 const navigationActions = [
     {
         id: 'saved',
         label: 'Guardados',
         ariaLabel: 'Ver productos guardados',
-        href: '#',
+        to: {
+            name: 'favorites',
+        },
         icon: savedIcon,
     },
     {
         id: 'cart',
         label: 'Carrito',
         ariaLabel: 'Ver carrito',
-        href: '/mi-carrito',
+        to: {
+            name: 'cart',
+        },
         icon: cartIcon,
     },
     {
@@ -39,7 +43,7 @@ const navigationActions = [
     },
 ]
 
-function submitSearch() {
+/*function submitSearch() {
     const normalizedSearch = searchText.value.trim()
 
     if (!normalizedSearch) {
@@ -47,7 +51,45 @@ function submitSearch() {
     }
 
     emit('search', normalizedSearch)
+}*/
+import { computed } from 'vue'
+import {
+    RouterLink,
+    useRouter,
+} from 'vue-router'
+
+import { useProductFilters } from '../composables/useProductFilters'
+
+const router = useRouter()
+
+const emit = defineEmits([
+    'toggle-menu',
+])
+
+const {
+    searchText,
+    searchError,
+    setSearchText,
+    clearSearch,
+} = useProductFilters()
+
+const searchModel = computed({
+    get() {
+        return searchText.value
+    },
+
+    set(value) {
+        setSearchText(value)
+    },
+})
+
+function submitSearch() {
+    router.push({
+        name: 'products',
+    })
 }
+
+
 </script>
 
 <template>
@@ -61,12 +103,14 @@ function submitSearch() {
                         <img :src="menuIcon" alt="" class="nav-icon" aria-hidden="true">
                     </button>
 
-                    <router-link class="navbar-brand d-flex align-items-center m-0" to="/"
-                        aria-label="Ir a la página principal de PixelVault">
+                    <RouterLink :to="{ name: 'products' }" class="navbar-brand d-flex align-items-center m-0"
+                        aria-label="Ir al catálogo de PixelVault">
                         <img :src="logoImage" alt="" class="site-logo" aria-hidden="true">
 
-                        <span class="site-title">PIXELVAULT</span>
-                    </router-link>
+                        <span class="site-title">
+                            PIXELVAULT
+                        </span>
+                    </RouterLink>
                 </div>
 
                 <!-- Buscador -->
@@ -77,41 +121,38 @@ function submitSearch() {
                     </label>
 
                     <div class="search-input-wrapper nes-field">
-                        <input id="search-product-input" v-model="searchText"
-                            class="form-control search-input nes-input" type="search" placeholder="Buscar producto"
-                            autocomplete="off">
+                        <input id="search-product-input" v-model="searchModel"
+                            class="form-control search-input nes-input" :class="{ 'is-invalid': searchError }"
+                            type="search" placeholder="Buscar producto" autocomplete="off" maxlength="60"
+                            :aria-invalid="Boolean(searchError)" aria-describedby="product-search-error"
+                            @keydown.esc="clearSearch">
 
                         <button class="search-button" type="submit" aria-label="Buscar producto">
                             <img :src="searchIcon" alt="" class="search-icon" aria-hidden="true">
                         </button>
                     </div>
+                    <p v-if="searchError" id="product-search-error" class="search-error text-danger mt-2 mb-0"
+                        role="alert">
+                        {{ searchError }}
+                    </p>
                 </form>
+
 
                 <!-- Acciones -->
                 <div class="nav-actions ms-auto ms-lg-0 d-flex align-items-center gap-2 gap-sm-3">
-                    <template v-for="action in navigationActions" :key="action.id">
-                        <router-link v-if="action.to" :to="action.to"
-                            class="nav-action-link d-flex flex-column align-items-center"
-                            :aria-label="action.ariaLabel">
-                            <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
-                                aria-hidden="true">
-                                <img :src="action.icon" alt="" class="nav-action-icon">
-                            </span>
+                    <component :is="action.to ? RouterLink : 'a'" v-for="action in navigationActions" :key="action.id"
+                        v-bind="action.to
+                            ? { to: action.to }
+                            : { href: action.href }
+                            " class="nav-action-link d-flex flex-column align-items-center"
+                        :aria-label="action.ariaLabel">
+                        <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
+                            aria-hidden="true">
+                            <img :src="action.icon" alt="" class="nav-action-icon">
+                        </span>
 
-                            <span>{{ action.label }}</span>
-                        </router-link>
-
-                        <a v-else :href="action.href"
-                            class="nav-action-link d-flex flex-column align-items-center"
-                            :aria-label="action.ariaLabel">
-                            <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
-                                aria-hidden="true">
-                                <img :src="action.icon" alt="" class="nav-action-icon">
-                            </span>
-
-                            <span>{{ action.label }}</span>
-                        </a>
-                    </template>
+                        <span>{{ action.label }}</span>
+                    </component>
                 </div>
             </div>
         </nav>
@@ -134,10 +175,19 @@ function submitSearch() {
     margin-inline: auto;
 }
 
+
+.search-error {
+    font-size: 0.52rem;
+    line-height: 1.5;
+}
+
+.search-input.is-invalid {
+    border-color: #dc3545;
+    background-image: none;
+}
+
+
 /* Marca y menú */
-
-
-
 .menu-button {
     width: 44px;
     height: 44px;
