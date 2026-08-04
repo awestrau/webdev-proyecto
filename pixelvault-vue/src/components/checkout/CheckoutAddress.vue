@@ -71,7 +71,7 @@ const canContinue = computed(() => {
     <div class="row g-3 align-items-start">
       <!-- Direcciones y envío -->
       <div class="col-12 col-lg-8">
-        <div class="checkout-address-panel bg-secondary-subtle p-3 p-md-4">
+        <div class="checkout-address-panel nes-container is-rounded">
           <AddressList
             :addresses="addresses"
             :selected-address-id="selectedAddressId"
@@ -88,7 +88,7 @@ const canContinue = computed(() => {
           <section aria-labelledby="shipping-title">
             <h2
               id="shipping-title"
-              class="fs-2 mb-3 text-uppercase"
+              class="shipping-title mb-3"
             >
               Envío
             </h2>
@@ -97,7 +97,7 @@ const canContinue = computed(() => {
               <div
                 v-for="option in shippingOptions"
                 :key="option.id"
-                class="form-check shipping-option p-3"
+                class="shipping-option p-3"
                 :class="{
                   'shipping-option--selected':
                     selectedShippingId === option.id,
@@ -105,7 +105,7 @@ const canContinue = computed(() => {
               >
                 <input
                   :id="`shipping-${option.id}`"
-                  class="form-check-input"
+                  class="shipping-radio"
                   type="radio"
                   name="shipping-method"
                   :value="option.id"
@@ -114,7 +114,7 @@ const canContinue = computed(() => {
                 >
 
                 <label
-                  class="form-check-label w-100 ps-2"
+                  class="shipping-label w-100"
                   :for="`shipping-${option.id}`"
                 >
                   <strong class="d-block mb-1">
@@ -131,7 +131,7 @@ const canContinue = computed(() => {
           </section>
 
           <button
-            class="btn btn-secondary mt-4"
+            class="nes-btn back-cart-button mt-4"
             type="button"
             @click="emit('back-cart')"
           >
@@ -143,7 +143,7 @@ const canContinue = computed(() => {
       <!-- Resumen -->
       <div class="col-12 col-lg-4">
         <aside
-          class="checkout-summary bg-secondary-subtle p-3 p-md-4"
+          class="checkout-summary nes-container is-rounded"
           aria-labelledby="checkout-summary-title"
         >
           <h2
@@ -190,7 +190,7 @@ const canContinue = computed(() => {
           </dl>
 
           <button
-            class="continue-payment-button btn w-100 py-3"
+            class="continue-payment-button nes-btn is-primary w-100"
             type="button"
             :disabled="!canContinue"
             @click="emit('continue-payment')"
@@ -214,7 +214,9 @@ const canContinue = computed(() => {
 <style scoped>
 .checkout-address-panel,
 .checkout-summary {
+  background-color: #fff;
   color: #151515;
+  box-shadow: 4px 4px 0 #111;
 }
 
 .checkout-divider {
@@ -223,7 +225,19 @@ const canContinue = computed(() => {
   opacity: 1;
 }
 
+.shipping-title,
+.checkout-summary__title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+  color: #1a1f1f;
+}
+
 .shipping-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   border: 3px solid transparent;
 }
 
@@ -232,54 +246,103 @@ const canContinue = computed(() => {
   background-color: #fff1d7;
 }
 
-.shipping-option .form-check-input {
+.shipping-radio {
+  appearance: none;
+  flex: 0 0 auto;
   width: 1.4rem;
   height: 1.4rem;
-  margin-left: 0;
-}
-
-.shipping-option .form-check-label {
+  margin: 0.1rem 0 0;
+  border: 3px solid #111;
+  background-color: #fff;
   cursor: pointer;
-  font-size: 0.7rem;
-  line-height: 1.6;
 }
 
-.checkout-summary__title {
-  font-size: 0.9rem;
+.shipping-radio:checked {
+  background-color: #111;
+  box-shadow: inset 0 0 0 4px #fff1d7;
+}
+
+.shipping-radio:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 2px;
+}
+
+.shipping-label {
+  cursor: pointer;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  line-height: 1.8;
+  color: #151515;
+}
+
+.back-cart-button {
+  margin: 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+.back-cart-button:hover,
+.back-cart-button:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 3px;
 }
 
 .checkout-summary dt,
 .checkout-summary dd {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: normal;
 }
 
 .checkout-summary__total dt,
 .checkout-summary__total dd {
-  font-size: 0.95rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.65rem;
   font-weight: bold;
 }
 
 .continue-payment-button {
-  border: 3px solid #111;
-  background-color: #54b3ea;
-  box-shadow: 4px 4px 0 #111;
-  color: #111;
-  font-family: inherit;
-  font-size: 0.7rem;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  line-height: 1.6;
   text-transform: uppercase;
 }
 
-.continue-payment-button:hover:not(:disabled),
-.continue-payment-button:focus-visible:not(:disabled) {
-  background-color: #feb914;
-  outline: 3px solid #111;
-  outline-offset: 3px;
+/* Paleta del proyecto sobre el botón nes.css */
+.checkout-summary .nes-btn.is-primary {
+  background-color: #54b3ea;
+  color: #111;
 }
 
-.continue-payment-button:disabled {
+.checkout-summary .nes-btn.is-primary::after {
+  box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.checkout-summary .nes-btn.is-primary:hover:not(:disabled),
+.checkout-summary .nes-btn.is-primary:focus-visible:not(:disabled) {
+  background-color: #feb914;
+  color: #111;
+}
+
+.checkout-summary .nes-btn.is-primary:hover:not(:disabled)::after,
+.checkout-summary .nes-btn.is-primary:focus-visible:not(:disabled)::after {
+  box-shadow: inset -6px -6px #e5a800;
+}
+
+.checkout-summary .nes-btn.is-primary:active:not(.is-disabled)::after {
+  box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.checkout-summary .nes-btn.is-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.continue-payment-button:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 3px;
 }
 
 @media (min-width: 992px) {

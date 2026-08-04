@@ -39,8 +39,7 @@ function handleImageError() {
 </script>
 
 <template>
-    <article class="favorite-product-card d-flex flex-column h-100
-           p-3 bg-warning-subtle">
+    <article class="favorite-product-card nes-container is-rounded d-flex flex-column h-100">
         <!-- Información principal -->
         <header class="text-center mb-3">
             <h2 class="favorite-product-name mb-2">
@@ -53,7 +52,7 @@ function handleImageError() {
         </header>
 
         <!-- Imagen clickeable -->
-        <button class="favorite-product-image-button btn p-0 mb-3" type="button" data-bs-toggle="modal"
+        <button class="favorite-product-image-button p-0 mb-3" type="button" data-bs-toggle="modal"
             data-bs-target="#favorite-product-modal" :aria-label="`Ver información de ${product.name}`"
             @click="emit('open-details', product)">
             <span class="favorite-product-image d-flex align-items-center
@@ -74,11 +73,12 @@ function handleImageError() {
 
         <!-- Acciones -->
         <div class="d-flex flex-column flex-sm-row gap-3 mt-auto">
-            <button class="favorite-action-button btn flex-fill" type="button" @click="emit('add-to-cart', product.id)">
+            <button class="favorite-action-button nes-btn is-primary flex-fill" type="button"
+                @click="emit('add-to-cart', product.id)">
                 Agregar al carrito
             </button>
 
-            <button class="favorite-action-button btn flex-fill" type="button"
+            <button class="favorite-action-button nes-btn is-error flex-fill" type="button"
                 @click="emit('remove-favorite', product.id)">
                 Borrar de favoritos
             </button>
@@ -91,32 +91,40 @@ function handleImageError() {
     width: 100%;
     max-width: 390px;
     margin-inline: auto;
-    border-radius: 1.5rem;
+    background-color: #fff;
     color: #151515;
+    box-shadow: 4px 4px 0 #111;
 }
 
 .favorite-product-name {
-    font-size: 0.8rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
     overflow-wrap: anywhere;
 }
 
 .favorite-product-platform {
-    font-size: 0.65rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.5rem;
+    line-height: 1.6;
+    color: #4a4d4f;
 }
 
 .favorite-product-image-button {
     width: 100%;
     border: 0;
     background-color: transparent;
+    cursor: pointer;
 }
 
 .favorite-product-image {
     width: 100%;
     overflow: hidden;
     aspect-ratio: 1;
-    border: 4px solid transparent;
-    border-radius: 1.5rem;
-    background-color: #6c3d0c;
+    border: 3px solid #111;
+    background-color: #fff1d7;
     transition:
         border-color 150ms ease,
         transform 150ms ease;
@@ -140,24 +148,71 @@ function handleImageError() {
 }
 
 .favorite-product-price {
-    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    line-height: 1.8;
+    color: #1a1f1f;
 }
 
 .favorite-action-button {
     min-height: 62px;
-    border: 3px solid #111;
-    border-radius: 1.4rem;
-    background-color: #54b3ea;
-    color: #111;
-    font-family: inherit;
-    font-size: 0.62rem;
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
     line-height: 1.6;
     text-transform: uppercase;
 }
 
-.favorite-action-button:hover,
-.favorite-action-button:focus-visible {
+/* Paleta del proyecto sobre los botones nes.css */
+.favorite-product-card .nes-btn.is-primary {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.favorite-product-card .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.favorite-product-card .nes-btn.is-primary:hover,
+.favorite-product-card .nes-btn.is-primary:focus-visible {
     background-color: #feb914;
+    color: #111;
+}
+
+.favorite-product-card .nes-btn.is-primary:hover::after,
+.favorite-product-card .nes-btn.is-primary:focus-visible::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.favorite-product-card .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.favorite-product-card .nes-btn.is-error {
+    background-color: #e45b61;
+    color: #fff;
+}
+
+.favorite-product-card .nes-btn.is-error::after {
+    box-shadow: inset -4px -4px #8c2022;
+}
+
+.favorite-product-card .nes-btn.is-error:hover,
+.favorite-product-card .nes-btn.is-error:focus-visible {
+    background-color: #ce372b;
+    color: #fff;
+}
+
+.favorite-product-card .nes-btn.is-error:hover::after,
+.favorite-product-card .nes-btn.is-error:focus-visible::after {
+    box-shadow: inset -6px -6px #8c2022;
+}
+
+.favorite-product-card .nes-btn.is-error:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #8c2022;
+}
+
+.favorite-action-button:focus-visible {
     outline: 3px solid #111;
     outline-offset: 3px;
 }

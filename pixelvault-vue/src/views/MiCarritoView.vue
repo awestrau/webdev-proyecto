@@ -311,12 +311,12 @@ function handleOrderCompleted(completedOrder) {
                 </div>
 
                 <!-- Detalle de producto temporal -->
-                <section v-if="selectedProduct" class="product-detail-panel bg-warning-subtle p-3 p-md-4 mt-4"
+                <section v-if="selectedProduct" class="product-detail-panel nes-container is-rounded mt-4"
                     aria-labelledby="product-detail-title">
                     <div class="d-flex flex-wrap align-items-start
                    justify-content-between gap-3 mb-3">
                         <div>
-                            <h2 id="product-detail-title" class="fs-4 mb-2">
+                            <h2 id="product-detail-title" class="product-detail-title mb-2">
                                 {{ selectedProduct.name }}
                             </h2>
 
@@ -325,7 +325,7 @@ function handleOrderCompleted(completedOrder) {
                             </p>
                         </div>
 
-                        <button class="btn btn-danger" type="button" @click="closeProductDetails">
+                        <button class="nes-btn is-error" type="button" @click="closeProductDetails">
                             Cerrar
                         </button>
                     </div>
@@ -362,8 +362,8 @@ function handleOrderCompleted(completedOrder) {
                 </section>
 
                 <!-- Publicidad -->
-                <aside class="ad-banner d-flex align-items-center justify-content-center
-                 mx-auto mt-5 p-4 text-center bg-secondary-subtle" aria-label="Espacio publicitario">
+                <aside class="ad-banner nes-container is-rounded d-flex align-items-center justify-content-center
+                 mx-auto mt-5 text-center" aria-label="Espacio publicitario">
                     <h2 class="m-0">
                         Publicidad
                     </h2>
@@ -405,15 +405,75 @@ function handleOrderCompleted(completedOrder) {
     width: 100%;
     max-width: 760px;
     min-height: 220px;
+    background-color: #fff;
+    box-shadow: 4px 4px 0 #111;
+}
+
+.ad-banner.nes-container {
+    margin-inline: auto;
 }
 
 .ad-banner h2 {
-    font-size: clamp(2rem, 8vw, 4rem);
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(1rem, 6vw, 2rem);
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
 }
 
 .product-detail-panel {
-    border: 3px solid #111;
+    background-color: #fff;
+    color: #151515;
     box-shadow: 4px 4px 0 #111;
+}
+
+.product-detail-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
+    overflow-wrap: anywhere;
+}
+
+.product-detail-panel .dl-details {
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+
+/* Paleta del proyecto sobre el botón nes.css */
+.product-detail-panel .nes-btn.is-error {
+    margin: 0;
+    padding: 0.7rem 1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    background-color: #e45b61;
+    color: #fff;
+}
+
+.product-detail-panel .nes-btn.is-error::after {
+    box-shadow: inset -4px -4px #8c2022;
+}
+
+.product-detail-panel .nes-btn.is-error:hover,
+.product-detail-panel .nes-btn.is-error:focus-visible {
+    background-color: #ce372b;
+    color: #fff;
+}
+
+.product-detail-panel .nes-btn.is-error:hover::after,
+.product-detail-panel .nes-btn.is-error:focus-visible::after {
+    box-shadow: inset -6px -6px #8c2022;
+}
+
+.product-detail-panel .nes-btn.is-error:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #8c2022;
+}
+
+.product-detail-panel .nes-btn.is-error:focus-visible {
+    outline: 3px solid #111;
+    outline-offset: 3px;
 }
 
 .checkout-placeholder {

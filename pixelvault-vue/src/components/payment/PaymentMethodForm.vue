@@ -77,7 +77,7 @@ function savePaymentMethod() {
                 </div>
                 <form ref="formElement" novalidate @submit.prevent="savePaymentMethod">
                     <div class="modal-body">
-                        <div class="alert alert-info small" role="note"> Esta es una simulación. Utiliza únicamente
+                        <div class="form-note small" role="note"> Esta es una simulación. Utiliza únicamente
                             datos ficticios. </div>
                         <div class="row g-3">
                             <div class="col-12"> <label for="cardholder-name" class="form-label"> Nombre del titular
@@ -105,8 +105,8 @@ function savePaymentMethod() {
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer"> <button class="btn btn-secondary" type="button" data-bs-dismiss="modal"
-                            @click="resetForm"> Cancelar </button> <button class="save-payment-method-button btn"
+                    <div class="modal-footer"> <button class="nes-btn" type="button" data-bs-dismiss="modal"
+                            @click="resetForm"> Cancelar </button> <button class="save-payment-method-button nes-btn is-primary"
                             type="submit"> Guardar tarjeta </button> </div>
                 </form>
             </div>
@@ -122,27 +122,73 @@ function savePaymentMethod() {
     box-shadow: 6px 6px 0 #111;
 }
 
+.payment-form-modal .modal-header {
+    background-color: #feb914;
+    color: #111;
+    border-bottom: 3px solid #111;
+}
+
+.payment-form-modal .modal-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+}
+
 .form-label,
-.modal-title,
 .modal-footer button {
     font-family: inherit;
 }
 
 .form-label {
-    font-size: 0.7rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+}
+
+.form-note {
+    padding: 0.6rem 0.9rem;
+    margin-bottom: 1.25rem;
+    border: 3px solid #111;
+    background-color: #fff1d7;
+    color: #151515;
 }
 
 .save-payment-method-button {
-    border: 3px solid #111;
+    margin: 0;
+    padding: 0.75rem 1.25rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+}
+
+/* Paleta del proyecto sobre el botón nes.css */
+.payment-form-modal .nes-btn.is-primary {
     background-color: #54b3ea;
-    box-shadow: 3px 3px 0 #111;
     color: #111;
 }
 
-.save-payment-method-button:hover,
-.save-payment-method-button:focus-visible {
+.payment-form-modal .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.payment-form-modal .nes-btn.is-primary:hover,
+.payment-form-modal .nes-btn.is-primary:focus-visible {
     background-color: #feb914;
+    color: #111;
+}
+
+.payment-form-modal .nes-btn.is-primary:hover::after,
+.payment-form-modal .nes-btn.is-primary:focus-visible::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.payment-form-modal .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.save-payment-method-button:focus-visible {
     outline: 3px solid #111;
-    outline-offset: 2px;
+    outline-offset: 3px;
 }
 </style>

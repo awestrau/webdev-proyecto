@@ -262,10 +262,13 @@ onBeforeUnmount(() => {
 /* Producto no encontrado */
 .product-not-found {
   max-width: 720px;
-  margin-inline: auto;
   background-color: #fff;
   color: #151515;
   box-shadow: 4px 4px 0 #111;
+}
+
+.product-not-found.nes-container {
+  margin-inline: auto;
 }
 
 .product-not-found h1 {
