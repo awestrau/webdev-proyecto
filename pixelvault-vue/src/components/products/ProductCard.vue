@@ -150,7 +150,7 @@ function handleImageError() {
     overflow: hidden;
     aspect-ratio: 1;
     border: 4px solid transparent;
-    background-color: #6c3d0c;
+    border-color: gray;
     transition:
         border-color 150ms ease,
         transform 150ms ease;
