@@ -53,7 +53,7 @@ function selectImage(image) {
 
 <style scoped>
 .product-thumbnails {
-    overflow-x: auto;
+    /*overflow-x: auto;*/
     padding: 0.2rem;
 }
 
@@ -82,6 +82,7 @@ function selectImage(image) {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    max-height: 520px;
 }
 
 .product-main-image {
