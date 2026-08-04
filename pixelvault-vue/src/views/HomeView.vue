@@ -9,15 +9,8 @@ const failedImages = ref(new Set())
 /*
  * Destacados reales del catálogo, en orden retro de mayor a menor impacto:
  * 11 - Super Nintendo Entertainment System, 12 - Super Mario World, 10 - PlayStation 2 Slim.
- * Las imágenes de Unsplash se usan solo como ilustración.
  */
 const featuredProductIds = [11, 12, 10]
-
-const featuredImageByProductId = {
-  11: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=250&fit=crop',
-  12: 'https://images.unsplash.com/photo-1511882150382-421056c89033?w=400&h=250&fit=crop',
-  10: 'https://images.unsplash.com/photo-1555864326-5cf22ef123cf?w=400&h=250&fit=crop',
-}
 
 const featuredProducts = computed(() => {
   return featuredProductIds
@@ -36,7 +29,7 @@ const featuredProducts = computed(() => {
         category: product.category,
         price: product.price,
         badgeClass: getBadgeClass(product.category),
-        image: featuredImageByProductId[productId],
+        image: product.images?.[0] ?? '',
         alt: product.name,
       }
     })
