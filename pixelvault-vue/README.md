@@ -1,42 +1,93 @@
-# pixelvault-vue
+# PixelVault
 
-This template should help get you started developing with Vue 3 in Vite.
+![logo](./doc/logo.jpg)
 
-## Recommended IDE Setup
+**Universidad CENFOTEC**
+**Escuela de Ingeniería de Software**  
+**Curso:** Programación Web Avanzada (SOFT 12)  
+**Sección:** SCV1  
+**Periodo:** C2-2026  
+**Docente facilitador:** Pablo Monestel Gamboa
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+**Integrantes:**
+- Andrés Westra Ureña
+- Jimena Montero Segura
+- Esteban Jesús Delgado González
 
-## Recommended Browser Setup
+## Definición de la Empresa
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+### Nombre
 
-## Type Support for `.vue` Imports in TS
+**PixelVault** — Tienda en línea de videojuegos y consolas retro.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+### Misión
 
-## Customize configuration
+Ofrecer a los amantes de los videojuegos una plataforma accesible y confiable para adquirir videojuegos y consolas retro, brindando una experiencia de compra nostálgica, intuitiva y segura que conecte a los usuarios con los clásicos que marcaron generaciones.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+### Visión
 
-## Project Setup
+Ser la tienda en línea de referencia en videojuegos y consolas retro en la región, reconocida por la calidad de su catálogo, su estilo visual único inspirado en la era dorada de los videojuegos y la excelencia en la experiencia de usuario.
+
+### Valores
+
+- **Nostalgia:** Celebramos la historia de los videojuegos y su legado cultural.
+- **Calidad:** Garantizamos productos en óptimas condiciones y un servicio confiable.
+- **Pasión:** Compartimos el amor por los clásicos del gaming con nuestra comunidad.
+- **Accesibilidad:** Facilitamos el acceso a piezas de colección para todos los aficionados.
+
+### Estilo Visual
+
+Diseño retro pixeleado basado en [NES.css](https://nostalgic-css.github.io/NES.css/), evocando la estética de la era de 8 bits.
+
+### Iconos
+
+https://www.streamlinehq.com/icons/pixel
+
+## Ejecución del proyecto
+
+La aplicación web está desarrollada con **Vue 3 + Vite** y se encuentra en la carpeta [`pixelvault-vue/`](./pixelvault-vue).
+
+### Requisitos
+
+- **Node.js** `^22.18.0` o `>=24.12.0`
+- **npm** (incluido con Node.js)
+
+### Instalación de dependencias
 
 ```sh
+cd pixelvault-vue
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Servidor de desarrollo (con recarga en caliente)
 
 ```sh
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Se levanta en <http://localhost:5173>.
+
+### Compilación para producción
 
 ```sh
 npm run build
 ```
+
+El resultado se genera en `pixelvault-vue/dist/`.
+
+### Vista previa de la compilación
+
+```sh
+npm run preview
+```
+
+### Rutas principales
+
+| Ruta | Descripción |
+|---|---|
+| `/` | Landing page |
+| `/products` | Catálogo de productos |
+| `/producto/:id` | Detalle de un producto |
+| `/login` y `/registro` | Iniciar sesión y crear cuenta |
+| `/mi_carrito` | Carrito de compras (incluye checkout y pago) |
+| `/guardados` | Productos guardados en favoritos |
