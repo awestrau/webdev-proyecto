@@ -1,6 +1,6 @@
 # PixelVault
 
-![logo](./doc/logo.jpg)
+![logo](src/assets/images/logo.jpg)
 
 **Universidad CENFOTEC**
 **Escuela de Ingeniería de Software**  
