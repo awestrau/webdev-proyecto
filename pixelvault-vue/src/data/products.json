@@ -2,7 +2,7 @@
     {
         "id": 1,
         "name": "PlayStation 5 Slim",
-        "price": 499.99,
+        "price": 260000,
         "platform": "PlayStation 5",
         "category": "Consola",
         "description": "Consola PlayStation 5 Slim con almacenamiento SSD, control DualSense y compatibilidad con juegos físicos y digitales.",
@@ -16,7 +16,7 @@
     {
         "id": 2,
         "name": "Xbox Series X",
-        "price": 499.99,
+        "price": 255000,
         "platform": "Xbox Series",
         "category": "Consola",
         "description": "Consola Xbox Series X con almacenamiento SSD y compatibilidad con juegos de generaciones anteriores.",
@@ -30,7 +30,7 @@
     {
         "id": 3,
         "name": "Nintendo Switch OLED",
-        "price": 349.99,
+        "price": 180000,
         "platform": "Nintendo Switch",
         "category": "Consola",
         "description": "Nintendo Switch con pantalla OLED, almacenamiento interno de 64 GB y base con puerto LAN.",
@@ -44,7 +44,7 @@
     {
         "id": 4,
         "name": "Marvel's Spider-Man 2",
-        "price": 69.99,
+        "price": 36000,
         "platform": "PlayStation 5",
         "category": "Juego",
         "description": "Videojuego de acción y aventura para PlayStation 5 con Peter Parker y Miles Morales.",
@@ -58,7 +58,7 @@
     {
         "id": 5,
         "name": "The Legend of Zelda: Tears of the Kingdom",
-        "price": 69.99,
+        "price": 36000,
         "platform": "Nintendo Switch",
         "category": "Juego",
         "description": "Explora las tierras y los cielos de Hyrule en una aventura de mundo abierto para Nintendo Switch.",
@@ -72,7 +72,7 @@
     {
         "id": 6,
         "name": "Forza Horizon 5",
-        "price": 59.99,
+        "price": 31000,
         "platform": "Xbox Series",
         "category": "Juego",
         "description": "Videojuego de carreras de mundo abierto ambientado en diferentes regiones de México.",
@@ -86,7 +86,7 @@
     {
         "id": 7,
         "name": "Control inalámbrico DualSense",
-        "price": 74.99,
+        "price": 39000,
         "platform": "PlayStation 5",
         "category": "Accesorio",
         "description": "Control inalámbrico con respuesta háptica, gatillos adaptativos y micrófono integrado.",
@@ -100,7 +100,7 @@
     {
         "id": 8,
         "name": "Control inalámbrico Xbox",
-        "price": 64.99,
+        "price": 34000,
         "platform": "Xbox Series",
         "category": "Accesorio",
         "description": "Control inalámbrico compatible con Xbox Series, Xbox One y computadoras.",
@@ -114,7 +114,7 @@
     {
         "id": 9,
         "name": "Nintendo Switch Pro Controller",
-        "price": 69.99,
+        "price": 36000,
         "platform": "Nintendo Switch",
         "category": "Accesorio",
         "description": "Control Pro inalámbrico para Nintendo Switch con controles de movimiento y vibración HD.",
@@ -128,7 +128,7 @@
     {
         "id": 10,
         "name": "PlayStation 2 Slim",
-        "price": 149.99,
+        "price": 78000,
         "platform": "PlayStation 2",
         "category": "Consola legacy",
         "description": "Consola PlayStation 2 Slim reacondicionada y probada para juegos clásicos en formato físico.",
@@ -142,7 +142,7 @@
     {
         "id": 11,
         "name": "Super Nintendo Entertainment System",
-        "price": 179.99,
+        "price": 93000,
         "platform": "Super Nintendo",
         "category": "Consola legacy",
         "description": "Consola Super Nintendo clásica reacondicionada para disfrutar videojuegos retro.",
@@ -156,7 +156,7 @@
     {
         "id": 12,
         "name": "Super Mario World",
-        "price": 49.99,
+        "price": 26000,
         "platform": "Super Nintendo",
         "category": "Juego legacy",
         "description": "Cartucho clásico de Super Mario World compatible con Super Nintendo.",

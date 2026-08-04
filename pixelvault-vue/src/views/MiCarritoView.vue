@@ -1,29 +1,28 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import CheckoutProgress from '../components/cart/CheckoutProgress.vue'
 import CartList from '../components/cart/CartList.vue'
 import OrderSummary from '../components/cart/OrderSummary.vue'
 import CheckoutAddress from '../components/checkout/CheckoutAddress.vue'
-
-const currentStep = ref('cart')
-const appliedCoupon = ref(null)
-const couponError = ref('')
-const selectedProduct = ref(null)
-
 import CheckoutPayment from '../components/payment/CheckoutPayment.vue'
-
-import { useRouter } from 'vue-router'
-const router = useRouter()
-
 
 import products from '../data/products.json'
 import promotionCodes from '../data/promotionCodes.json'
 import addressesData from '../data/addresses.json'
 import shippingOptionsData from '../data/shippingOptions.json'
 import paymentMethodsData from '../data/paymentMethods.json'
+import { formatCurrency } from '../utils/formatCurrency'
 
 import { useCart } from '../composables/useCart'
+
+const router = useRouter()
+
+const currentStep = ref('cart')
+const appliedCoupon = ref(null)
+const couponError = ref('')
+const selectedProduct = ref(null)
 
 /*
  * Catálogo simulado.
@@ -59,42 +58,10 @@ const paymentMethods = ref(
 /*
  * Códigos disponibles para la simulación.
  *
- * HOLIDAY aplica un descuento fijo de $15.
+ * HOLIDAY aplica un descuento fijo de ₡7.500.
  * PLAYER20 aplica un 20% de descuento.
  * RETRO10 aplica un 10% de descuento.
  */
-
-
-
-/*function createCartItem(productId, quantity = 1) {
-    const product = products.find((item) => item.id === productId)
-
-    if (!product) {
-        throw new Error(`No se encontró el producto con ID ${productId}`)
-    }
-
-    return {
-        ...product,
-        quantity,
-    }
-}*/
-
-
-
-/*const cartItems = ref([
-    createCartItem(5, 1),
-    createCartItem(7, 2),
-    createCartItem(10, 1),
-])
-
-const subtotal = computed(() => {
-    const value = cartItems.value.reduce((total, product) => {
-        return total + product.price * product.quantity
-    }, 0)
-
-    return roundCurrency(value)
-})*/
-
 
 const discountAmount = computed(() => {
     if (!appliedCoupon.value) {
@@ -129,41 +96,6 @@ function roundCurrency(value) {
     return Math.round((value + Number.EPSILON) * 100) / 100
 }
 
-/*function increaseQuantity(productId) {
-    const product = cartItems.value.find((item) => item.id === productId)
-
-    if (!product) {
-        return
-    }
-
-    product.quantity += 1
-}*/
-
-/*function decreaseQuantity(productId) {
-    const product = cartItems.value.find((item) => item.id === productId)
-
-    if (!product || product.quantity <= 1) {
-        return
-    }
-
-    product.quantity -= 1
-}*/
-
-/*function removeProduct(productId) {
-    cartItems.value = cartItems.value.filter((item) => {
-        return item.id !== productId
-    })
-
-    if (selectedProduct.value?.id === productId) {
-        selectedProduct.value = null
-    }
-}
-
-/*function clearCart() {
-    cartItems.value = []
-    selectedProduct.value = null
-}*/
-
 function removeProduct(productId) {
   removeCartProduct(productId)
 
@@ -176,35 +108,6 @@ function clearCart() {
   clearStoredCart()
   selectedProduct.value = null
 }
-
-
-
-/*function applyCoupon(code) {
-    couponError.value = ''
-
-    if (appliedCoupon.value) {
-        couponError.value = 'Ya existe un código aplicado a esta orden.'
-        return
-    }
-
-    if (!code) {
-        couponError.value = 'Ingresa un código de promoción.'
-        return
-    }
-
-    const normalizedCode = code.trim().toUpperCase()
-    const promotion = promotionCodes[normalizedCode]
-
-    if (!promotion) {
-        couponError.value = 'El código ingresado no es válido.'
-        return
-    }
-
-    appliedCoupon.value = {
-        code: normalizedCode,
-        ...promotion,
-    }
-}*/
 
 function applyCoupon(code) {
   couponError.value = ''
@@ -235,7 +138,6 @@ function applyCoupon(code) {
   }
 }
 
-
 function removeCoupon() {
     appliedCoupon.value = null
     couponError.value = ''
@@ -249,10 +151,6 @@ function continueToCheckout() {
     selectedProduct.value = null
     currentStep.value = 'checkout'
 }
-
-/*function continueToPayment() {
-    currentStep.value = 'payment'
-}*/
 
 function showProductDetails(productId) {
     selectedProduct.value = products.find((product) => {
@@ -273,17 +171,9 @@ watch(subtotal, (newSubtotal) => {
     }
 })
 
-
-
 //Seccion checkout
 const selectedAddressId = ref(addresses.value[0]?.id ?? null)
 const selectedShippingId = ref('express')
-
-/*const totalProductUnits = computed(() => {
-    return cartItems.value.reduce((total, product) => {
-        return total + product.quantity
-    }, 0)
-})*/
 
 const selectedShipping = computed(() => {
     return shippingOptions.find((option) => {
@@ -346,7 +236,6 @@ function continueToPayment() {
     currentStep.value = 'payment'
 }
 
-
 //SECCION PAGO
 const selectedPaymentMethodId = ref(null)
 //Funciones
@@ -382,8 +271,6 @@ function addPaymentMethod(paymentMethodData) {
 }
 
 function handleOrderCompleted(completedOrder) {
-    console.log('Orden completada:', completedOrder)
-
     clearCart()
     removeCoupon()
 
@@ -395,9 +282,7 @@ function handleOrderCompleted(completedOrder) {
      * Reemplaza la pantalla de pago por el landing page.
      */
     router.replace({ name: 'home' })
-    //window.location.href = '/'
 }
-
 </script>
 
 <template>
@@ -426,12 +311,12 @@ function handleOrderCompleted(completedOrder) {
                 </div>
 
                 <!-- Detalle de producto temporal -->
-                <section v-if="selectedProduct" class="product-detail-panel bg-warning-subtle p-3 p-md-4 mt-4"
+                <section v-if="selectedProduct" class="product-detail-panel nes-container is-rounded mt-4"
                     aria-labelledby="product-detail-title">
                     <div class="d-flex flex-wrap align-items-start
                    justify-content-between gap-3 mb-3">
                         <div>
-                            <h2 id="product-detail-title" class="fs-4 mb-2">
+                            <h2 id="product-detail-title" class="product-detail-title mb-2">
                                 {{ selectedProduct.name }}
                             </h2>
 
@@ -440,7 +325,7 @@ function handleOrderCompleted(completedOrder) {
                             </p>
                         </div>
 
-                        <button class="btn btn-danger" type="button" @click="closeProductDetails">
+                        <button class="nes-btn is-error" type="button" @click="closeProductDetails">
                             Cerrar
                         </button>
                     </div>
@@ -464,7 +349,7 @@ function handleOrderCompleted(completedOrder) {
 
                                 <dt class="col-5">Precio:</dt>
                                 <dd class="col-7">
-                                    ${{ selectedProduct.price.toFixed(2) }}
+                                    {{ formatCurrency(selectedProduct.price) }}
                                 </dd>
 
                                 <dt class="col-12 mt-3">Descripción:</dt>
@@ -477,8 +362,8 @@ function handleOrderCompleted(completedOrder) {
                 </section>
 
                 <!-- Publicidad -->
-                <aside class="ad-banner d-flex align-items-center justify-content-center
-                 mx-auto mt-5 p-4 text-center bg-secondary-subtle" aria-label="Espacio publicitario">
+                <aside class="ad-banner nes-container is-rounded d-flex align-items-center justify-content-center
+                 mx-auto mt-5 text-center" aria-label="Espacio publicitario">
                     <h2 class="m-0">
                         Publicidad
                     </h2>
@@ -520,15 +405,75 @@ function handleOrderCompleted(completedOrder) {
     width: 100%;
     max-width: 760px;
     min-height: 220px;
+    background-color: #fff;
+    box-shadow: 4px 4px 0 #111;
+}
+
+.ad-banner.nes-container {
+    margin-inline: auto;
 }
 
 .ad-banner h2 {
-    font-size: clamp(2rem, 8vw, 4rem);
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(1rem, 6vw, 2rem);
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
 }
 
 .product-detail-panel {
-    border: 3px solid #111;
+    background-color: #fff;
+    color: #151515;
     box-shadow: 4px 4px 0 #111;
+}
+
+.product-detail-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
+    overflow-wrap: anywhere;
+}
+
+.product-detail-panel .dl-details {
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+
+/* Paleta del proyecto sobre el botón nes.css */
+.product-detail-panel .nes-btn.is-error {
+    margin: 0;
+    padding: 0.7rem 1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    background-color: #e45b61;
+    color: #fff;
+}
+
+.product-detail-panel .nes-btn.is-error::after {
+    box-shadow: inset -4px -4px #8c2022;
+}
+
+.product-detail-panel .nes-btn.is-error:hover,
+.product-detail-panel .nes-btn.is-error:focus-visible {
+    background-color: #ce372b;
+    color: #fff;
+}
+
+.product-detail-panel .nes-btn.is-error:hover::after,
+.product-detail-panel .nes-btn.is-error:focus-visible::after {
+    box-shadow: inset -6px -6px #8c2022;
+}
+
+.product-detail-panel .nes-btn.is-error:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #8c2022;
+}
+
+.product-detail-panel .nes-btn.is-error:focus-visible {
+    outline: 3px solid #111;
+    outline-offset: 3px;
 }
 
 .checkout-placeholder {

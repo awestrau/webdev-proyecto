@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
         <div class="row g-4 align-items-start">
           <!-- Galería y descripción -->
           <div class="col-12 col-lg-8">
-            <section class="product-media-panel bg-secondary-subtle p-3 p-md-4">
+            <section class="product-media-panel nes-container is-rounded">
               <ProductGallery
                 v-model="selectedImage"
                 :images="product.images"
@@ -130,12 +130,12 @@ onBeforeUnmount(() => {
               />
 
               <section
-                class="product-description mt-3 p-4 p-md-5 bg-warning-subtle"
+                class="product-description nes-container is-rounded mt-3"
                 aria-labelledby="product-description-title"
               >
                 <h2
                   id="product-description-title"
-                  class="fs-5 mb-3"
+                  class="mb-3"
                 >
                   Descripción del producto
                 </h2>
@@ -162,10 +162,10 @@ onBeforeUnmount(() => {
       <!-- Producto inexistente -->
       <section
         v-else
-        class="alert alert-warning text-center py-5"
+        class="product-not-found nes-container is-rounded text-center"
         role="alert"
       >
-        <h1 class="fs-3 mb-3">
+        <h1 class="mb-3">
           Producto no encontrado
         </h1>
 
@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
 
         <RouterLink
           :to="{ name: 'home' }"
-          class="btn btn-secondary"
+          class="nes-btn is-primary"
         >
           Volver al inicio
         </RouterLink>
@@ -225,28 +225,123 @@ onBeforeUnmount(() => {
 }
 
 .product-breadcrumb {
-  font-size: 0.85rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1.8;
+  color: #1a1f1f;
   text-transform: uppercase;
 }
 
 .product-media-panel {
   min-height: 650px;
+  background-color: #fff;
+  color: #151515;
+  box-shadow: 4px 4px 0 #111;
 }
 
 .product-description {
   min-height: 175px;
-  border-radius: 1.5rem;
+  background-color: #fff1d7;
+  color: #151515;
+  box-shadow: 4px 4px 0 #111;
+}
+
+.product-description h2 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: #1a1f1f;
+  text-transform: uppercase;
 }
 
 .product-description p {
-  font-family: Arial, sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.7;
 }
 
+/* Producto no encontrado */
+.product-not-found {
+  max-width: 720px;
+  background-color: #fff;
+  color: #151515;
+  box-shadow: 4px 4px 0 #111;
+}
+
+.product-not-found.nes-container {
+  margin-inline: auto;
+}
+
+.product-not-found h1 {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+}
+
+.product-not-found p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.product-not-found .nes-btn.is-primary {
+  margin: 0;
+  padding: 0.85rem 1.25rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.65rem;
+  line-height: 1.6;
+  text-transform: uppercase;
+  background-color: #54b3ea;
+  color: #111;
+}
+
+.product-not-found .nes-btn.is-primary::after {
+  box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.product-not-found .nes-btn.is-primary:hover,
+.product-not-found .nes-btn.is-primary:focus-visible {
+  background-color: #feb914;
+  color: #111;
+}
+
+.product-not-found .nes-btn.is-primary:hover::after,
+.product-not-found .nes-btn.is-primary:focus-visible::after {
+  box-shadow: inset -6px -6px #e5a800;
+}
+
+.product-not-found .nes-btn.is-primary:active:not(.is-disabled)::after {
+  box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.product-not-found .nes-btn.is-primary:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 3px;
+}
+
+/* Toast de feedback con estética pixel */
 .product-feedback-toast {
   border: 3px solid #111;
   border-radius: 0;
   box-shadow: 4px 4px 0 #111;
+}
+
+.product-feedback-toast .toast-header {
+  background-color: #feb914;
+  color: #111;
+  border-bottom: 3px solid #111;
+}
+
+.product-feedback-toast .toast-header strong {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.product-feedback-toast .toast-body {
+  background-color: #fff;
+  color: #151515;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 </style>

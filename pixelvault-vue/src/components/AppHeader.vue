@@ -1,5 +1,9 @@
 <script setup>
-//import { ref } from 'vue'
+import { computed } from 'vue'
+import {
+    RouterLink,
+    useRouter,
+} from 'vue-router'
 
 import menuIcon from '../assets/icons/menu.svg'
 import searchIcon from '../assets/icons/search.svg'
@@ -8,12 +12,20 @@ import cartIcon from '../assets/icons/cart.svg'
 import userIcon from '../assets/icons/user.svg'
 import logoImage from '../assets/images/logo.jpg'
 
-/*const emit = defineEmits({
-    search: (searchTerm) => typeof searchTerm === 'string',
-    'toggle-menu': () => true,
-})
+import { useProductFilters } from '../composables/useProductFilters'
 
-const searchText = ref('')*/
+const router = useRouter()
+
+const emit = defineEmits([
+    'toggle-menu',
+])
+
+const {
+    searchText,
+    searchError,
+    setSearchText,
+    clearSearch,
+} = useProductFilters()
 
 const navigationActions = [
     {
@@ -43,36 +55,6 @@ const navigationActions = [
     },
 ]
 
-/*function submitSearch() {
-    const normalizedSearch = searchText.value.trim()
-
-    if (!normalizedSearch) {
-        return
-    }
-
-    emit('search', normalizedSearch)
-}*/
-import { computed } from 'vue'
-import {
-    RouterLink,
-    useRouter,
-} from 'vue-router'
-
-import { useProductFilters } from '../composables/useProductFilters'
-
-const router = useRouter()
-
-const emit = defineEmits([
-    'toggle-menu',
-])
-
-const {
-    searchText,
-    searchError,
-    setSearchText,
-    clearSearch,
-} = useProductFilters()
-
 const searchModel = computed({
     get() {
         return searchText.value
@@ -88,8 +70,6 @@ function submitSearch() {
         name: 'products',
     })
 }
-
-
 </script>
 
 <template>
@@ -103,8 +83,8 @@ function submitSearch() {
                         <img :src="menuIcon" alt="" class="nav-icon" aria-hidden="true">
                     </button>
 
-                    <RouterLink :to="{ name: 'products' }" class="navbar-brand d-flex align-items-center m-0"
-                        aria-label="Ir al catálogo de PixelVault">
+                    <RouterLink :to="{ name: 'home' }" class="navbar-brand d-flex align-items-center m-0"
+                        aria-label="Ir al inicio de PixelVault">
                         <img :src="logoImage" alt="" class="site-logo" aria-hidden="true">
 
                         <span class="site-title">

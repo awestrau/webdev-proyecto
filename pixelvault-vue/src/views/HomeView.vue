@@ -1,33 +1,64 @@
 <script setup>
-const products = [
-  {
-    id: 'nes-classic',
-    name: 'NES Classic Edition',
-    category: 'Consola',
-    badgeClass: 'badge-console',
-    price: '₡45,000',
-    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=250&fit=crop',
-    alt: 'NES Classic Edition',
-  },
-  {
-    id: 'super-mario-world',
-    name: 'Super Mario World',
-    category: 'Juego',
-    badgeClass: 'badge-game',
-    price: '₡12,500',
-    image: 'https://images.unsplash.com/photo-1511882150382-421056c89033?w=400&h=250&fit=crop',
-    alt: 'Super Mario World',
-  },
-  {
-    id: 'game-boy-color',
-    name: 'Game Boy Color',
-    category: 'Consola',
-    badgeClass: 'badge-console',
-    price: '₡30,000',
-    image: 'https://images.unsplash.com/photo-1555864326-5cf22ef123cf?w=400&h=250&fit=crop',
-    alt: 'Game Boy Color',
-  },
-]
+import { computed, ref } from 'vue'
+
+import products from '../data/products.json'
+import { formatCurrency } from '../utils/formatCurrency'
+
+const failedImages = ref(new Set())
+
+/*
+ * Destacados reales del catálogo, en orden retro de mayor a menor impacto:
+ * 11 - Super Nintendo Entertainment System, 12 - Super Mario World, 10 - PlayStation 2 Slim.
+ * Las imágenes de Unsplash se usan solo como ilustración.
+ */
+const featuredProductIds = [11, 12, 10]
+
+const featuredImageByProductId = {
+  11: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=250&fit=crop',
+  12: 'https://images.unsplash.com/photo-1511882150382-421056c89033?w=400&h=250&fit=crop',
+  10: 'https://images.unsplash.com/photo-1555864326-5cf22ef123cf?w=400&h=250&fit=crop',
+}
+
+const featuredProducts = computed(() => {
+  return featuredProductIds
+    .map((productId) => {
+      const product = products.find((item) => {
+        return Number(item.id) === productId
+      })
+
+      if (!product) {
+        return null
+      }
+
+      return {
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        badgeClass: getBadgeClass(product.category),
+        image: featuredImageByProductId[productId],
+        alt: product.name,
+      }
+    })
+    .filter(Boolean)
+})
+
+function getBadgeClass(category) {
+  const normalizedCategory = String(category ?? '')
+
+  if (normalizedCategory.startsWith('Juego')) {
+    return 'badge-game'
+  }
+
+  return 'badge-console'
+}
+
+function handleImageError(productId) {
+  failedImages.value = new Set([
+    ...failedImages.value,
+    productId,
+  ])
+}
 
 const categories = [
   {
@@ -66,7 +97,7 @@ const categories = [
         </p>
 
         <div class="hero-buttons">
-          <a href="#productos-destacados" class="nes-btn is-warning">Explorar Catálogo</a>
+          <router-link :to="{ name: 'products' }" class="nes-btn is-warning">Explorar Catálogo</router-link>
 
           <router-link to="/registro" class="nes-btn">Crear Cuenta</router-link>
         </div>
@@ -78,10 +109,16 @@ const categories = [
       <h2 id="productos-title" class="section-title text-center">Productos Destacados</h2>
 
       <div class="row g-4 mt-3">
-        <div v-for="product in products" :key="product.id" class="col-md-4">
+        <div v-for="product in featuredProducts" :key="product.id" class="col-md-4">
           <article class="nes-container is-rounded product-card">
             <div class="product-img-wrapper">
-              <img :src="product.image" :alt="product.alt" class="product-img">
+              <img v-if="!failedImages.has(product.id)" :src="product.image" :alt="product.alt" class="product-img"
+                @error="handleImageError(product.id)">
+
+              <span v-else class="product-img-placeholder d-flex align-items-center justify-content-center text-center p-3"
+                role="img" :aria-label="product.alt">
+                Imagen no disponible
+              </span>
             </div>
 
             <div class="product-body">
@@ -91,9 +128,10 @@ const categories = [
 
               <h3 class="product-name">{{ product.name }}</h3>
 
-              <p class="product-price">{{ product.price }}</p>
+              <p class="product-price">{{ formatCurrency(product.price) }}</p>
 
-              <a href="#" class="nes-btn is-primary w-100" :aria-label="`Ver ${product.name}`">Ver Producto</a>
+              <router-link :to="{ name: 'product-detail', params: { id: String(product.id) } }"
+                class="nes-btn is-primary w-100" :aria-label="`Ver ${product.name}`">Ver Producto</router-link>
             </div>
           </article>
         </div>
@@ -162,10 +200,10 @@ const categories = [
 }
 
 .hero-subtitle {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
   color: #a16207;
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   line-height: 1.8;
   text-transform: uppercase;
 }
@@ -274,6 +312,16 @@ const categories = [
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.product-img-placeholder {
+  width: 100%;
+  height: 100%;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1.8;
+  color: #1a1f1f;
+  background-color: #fff1d7;
 }
 
 .product-body {
@@ -412,7 +460,7 @@ const categories = [
   }
 
   .hero-subtitle {
-    font-size: 0.85rem;
+    font-size: 1.05rem;
   }
 
   .section-title {

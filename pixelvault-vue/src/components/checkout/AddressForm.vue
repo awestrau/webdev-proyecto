@@ -218,7 +218,7 @@ function saveAddress() {
 
           <div class="modal-footer">
             <button
-              class="btn btn-secondary"
+              class="nes-btn"
               type="button"
               data-bs-dismiss="modal"
               @click="resetForm"
@@ -227,7 +227,7 @@ function saveAddress() {
             </button>
 
             <button
-              class="save-address-button btn"
+              class="save-address-button nes-btn is-primary"
               type="submit"
             >
               Guardar dirección
@@ -246,27 +246,65 @@ function saveAddress() {
   box-shadow: 6px 6px 0 #111;
 }
 
-.modal-title,
+.address-modal .modal-header {
+  background-color: #feb914;
+  color: #111;
+  border-bottom: 3px solid #111;
+}
+
+.address-modal .modal-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+}
+
 .form-label,
 .modal-footer button {
   font-family: inherit;
 }
 
 .form-label {
-  font-size: 0.7rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  text-transform: uppercase;
 }
 
 .save-address-button {
-  border: 3px solid #111;
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+}
+
+/* Paleta del proyecto sobre el botón nes.css */
+.address-modal .nes-btn.is-primary {
   background-color: #54b3ea;
-  box-shadow: 3px 3px 0 #111;
   color: #111;
 }
 
-.save-address-button:hover,
-.save-address-button:focus-visible {
+.address-modal .nes-btn.is-primary::after {
+  box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.address-modal .nes-btn.is-primary:hover,
+.address-modal .nes-btn.is-primary:focus-visible {
   background-color: #feb914;
+  color: #111;
+}
+
+.address-modal .nes-btn.is-primary:hover::after,
+.address-modal .nes-btn.is-primary:focus-visible::after {
+  box-shadow: inset -6px -6px #e5a800;
+}
+
+.address-modal .nes-btn.is-primary:active:not(.is-disabled)::after {
+  box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.save-address-button:focus-visible {
   outline: 3px solid #111;
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 </style>

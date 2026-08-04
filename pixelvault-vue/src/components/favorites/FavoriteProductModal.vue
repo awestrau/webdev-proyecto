@@ -3,9 +3,12 @@ import {
     computed,
     onBeforeUnmount,
     ref,
+    watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
 import Modal from 'bootstrap/js/dist/modal'
+
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     product: {
@@ -16,16 +19,21 @@ const props = defineProps({
 
 const router = useRouter()
 const modalElement = ref(null)
+const imageFailed = ref(false)
 
 const mainImage = computed(() => {
     return props.product?.images?.[0] ?? ''
 })
 
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
+watch(
+    () => props.product?.images,
+    () => {
+        imageFailed.value = false
+    },
+)
+
+function handleImageError() {
+    imageFailed.value = true
 }
 
 function goToProductDetails() {
@@ -77,9 +85,9 @@ onBeforeUnmount(() => {
                         <!-- Imagen -->
                         <div class="col-12 col-md-5">
                             <div class="favorite-modal-image d-flex
-                       align-items-center justify-content-center
-                       bg-warning-subtle">
-                                <img v-if="mainImage" :src="mainImage" :alt="product.name">
+                       align-items-center justify-content-center">
+                                <img v-if="mainImage && !imageFailed" :src="mainImage" :alt="product.name"
+                                    @error="handleImageError">
 
                                 <span v-else class="small text-center">
                                     Imagen no disponible
@@ -89,7 +97,7 @@ onBeforeUnmount(() => {
 
                         <!-- Información sin descripción -->
                         <div class="col-12 col-md-7">
-                            <h3 class="fs-4 mb-4">
+                            <h3 class="favorite-modal-body__name mb-4">
                                 {{ product.name }}
                             </h3>
 
@@ -131,11 +139,11 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">
+                    <button class="nes-btn" type="button" data-bs-dismiss="modal">
                         Cerrar
                     </button>
 
-                    <button class="view-product-button btn" type="button" :disabled="!product"
+                    <button class="view-product-button nes-btn is-primary" type="button" :disabled="!product"
                         @click="goToProductDetails">
                         Ver más detalles
                     </button>
@@ -152,10 +160,33 @@ onBeforeUnmount(() => {
     box-shadow: 6px 6px 0 #111;
 }
 
+.favorite-modal .modal-header {
+    background-color: #feb914;
+    color: #111;
+    border-bottom: 3px solid #111;
+}
+
+.favorite-modal .modal-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+}
+
+.favorite-modal-body__name {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
+    overflow-wrap: anywhere;
+}
+
 .favorite-modal-image {
     overflow: hidden;
     aspect-ratio: 1;
-    border-radius: 1.5rem;
+    border: 3px solid #111;
+    background-color: #fff1d7;
 }
 
 .favorite-modal-image img {
@@ -165,8 +196,9 @@ onBeforeUnmount(() => {
 }
 
 .favorite-modal-details {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     line-height: 1.6;
+    color: #4a4d4f;
 }
 
 .favorite-modal-details dt,
@@ -174,18 +206,51 @@ onBeforeUnmount(() => {
     overflow-wrap: anywhere;
 }
 
-.view-product-button {
-    border: 3px solid #111;
-    background-color: #54b3ea;
-    box-shadow: 3px 3px 0 #111;
-    color: #111;
-    font-family: inherit;
+.modal-footer .nes-btn {
+    margin: 0;
+    padding: 0.7rem 1.1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    text-transform: uppercase;
 }
 
-.view-product-button:hover:not(:disabled),
-.view-product-button:focus-visible:not(:disabled) {
+.view-product-button {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+/* Paleta del proyecto sobre el botón nes.css */
+.favorite-modal .nes-btn.is-primary {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.favorite-modal .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.favorite-modal .nes-btn.is-primary:hover:not(:disabled),
+.favorite-modal .nes-btn.is-primary:focus-visible:not(:disabled) {
     background-color: #feb914;
+    color: #111;
+}
+
+.favorite-modal .nes-btn.is-primary:hover:not(:disabled)::after,
+.favorite-modal .nes-btn.is-primary:focus-visible:not(:disabled)::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.favorite-modal .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.favorite-modal .nes-btn.is-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.view-product-button:focus-visible {
     outline: 3px solid #111;
-    outline-offset: 2px;
+    outline-offset: 3px;
 }
 </style>

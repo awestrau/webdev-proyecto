@@ -30,13 +30,13 @@ const addressCountLabel = computed(() => {
     <div class="d-flex flex-wrap align-items-baseline gap-2 mb-4">
       <h1
         id="addresses-title"
-        class="m-0 fs-2 text-uppercase"
+        class="addresses-title m-0"
       >
         Mis direcciones
       </h1>
 
       <span
-        class="small text-uppercase"
+        class="addresses-count text-uppercase"
         aria-live="polite"
       >
         ({{ addressCountLabel }})
@@ -45,7 +45,7 @@ const addressCountLabel = computed(() => {
 
     <div
       v-if="addresses.length === 0"
-      class="alert alert-warning mb-4"
+      class="addresses-empty nes-container mb-4"
       role="status"
     >
       No tienes direcciones guardadas. Agrega una dirección para continuar.
@@ -69,7 +69,7 @@ const addressCountLabel = computed(() => {
     </div>
 
     <button
-      class="add-address-button btn btn-link p-0 border-0 text-decoration-none"
+      class="add-address-button nes-btn is-primary"
       type="button"
       data-bs-toggle="modal"
       data-bs-target="#address-form-modal"
@@ -80,17 +80,63 @@ const addressCountLabel = computed(() => {
 </template>
 
 <style scoped>
+.addresses-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  text-transform: uppercase;
+  color: #1a1f1f;
+}
+
+.addresses-count {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.5rem;
+  color: #1a1f1f;
+}
+
+.addresses-empty {
+  border: 3px solid #111;
+  background-color: #fff1d7;
+  color: #151515;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
 .add-address-button {
-  color: #0000dd;
-  font-family: inherit;
-  font-size: 0.75rem;
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+  line-height: 1.6;
   text-transform: uppercase;
 }
 
-.add-address-button:hover,
-.add-address-button:focus-visible {
+/* Paleta del proyecto sobre el botón nes.css */
+.add-address-button.nes-btn.is-primary {
+  background-color: #54b3ea;
   color: #111;
+}
+
+.add-address-button.nes-btn.is-primary::after {
+  box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.add-address-button.nes-btn.is-primary:hover,
+.add-address-button.nes-btn.is-primary:focus-visible {
   background-color: #feb914;
+  color: #111;
+}
+
+.add-address-button.nes-btn.is-primary:hover::after,
+.add-address-button.nes-btn.is-primary:focus-visible::after {
+  box-shadow: inset -6px -6px #e5a800;
+}
+
+.add-address-button.nes-btn.is-primary:active:not(.is-disabled)::after {
+  box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.add-address-button:focus-visible {
   outline: 3px solid #111;
   outline-offset: 3px;
 }

@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref, watch, } from 'vue'
 import Modal from 'bootstrap/js/dist/modal'
 import PaymentMethodList from './PaymentMethodList.vue'
 import PaymentMethodForm from './PaymentMethodForm.vue'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     paymentMethods: {
@@ -62,10 +63,6 @@ const isProcessing = computed(() => {
 watch(selectedPaymentMethod, (paymentMethod) => {
     if (paymentMethod) { paymentError.value = '' }
 })
-
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', }).format(value)
-}
 
 function generateOrderNumber() {
     const randomNumber = Math.floor(100000 + Math.random() * 900000)
@@ -132,18 +129,18 @@ onBeforeUnmount(() => {
     <section aria-label="Selección del método de pago">
         <div class="row g-3 align-items-start"> <!-- Tarjetas -->
             <div class="col-12 col-lg-8">
-                <div class="payment-panel bg-secondary-subtle p-3 p-md-4">
-                    <h1 class="fs-2 text-uppercase mb-5"> Métodos de pago </h1>
+                <div class="payment-panel nes-container is-rounded">
+                    <h1 class="payment-title mb-5"> Métodos de pago </h1>
                     <PaymentMethodList :payment-methods="paymentMethods"
                         :selected-payment-method-id="selectedPaymentMethodId"
                         @select-payment-method=" emit('select-payment-method', $event)" />
                     <PaymentMethodForm @save-payment-method="emit('add-payment-method', $event)" /> <button
-                        class="btn btn-secondary mt-5" type="button" @click="emit('back-checkout')"> Volver a
+                        class="nes-btn back-checkout-button mt-5" type="button" @click="emit('back-checkout')"> Volver a
                         direcciones </button>
                 </div>
             </div> <!-- Resumen -->
             <div class="col-12 col-lg-4">
-                <aside class="payment-summary bg-secondary-subtle p-3 p-md-4" aria-labelledby="payment-summary-title">
+                <aside class="payment-summary nes-container is-rounded" aria-labelledby="payment-summary-title">
                     <h2 id="payment-summary-title" class="payment-summary__title mb-4"> Resumen del pedido </h2>
                     <ul class="ps-4 mb-4 small">
                         <li class="mb-2"> {{ productCount }} {{ productCount === 1 ? 'producto' : 'productos' }} </li>
@@ -165,8 +162,8 @@ onBeforeUnmount(() => {
                             <dt>Total</dt>
                             <dd class="mb-0"> {{ formatCurrency(orderTotal) }} </dd>
                         </div>
-                    </dl> <button class="complete-order-button btn w-100 py-3" type="button" :disabled="isProcessing"
-                        @click="completeOrder"> Completar orden </button>
+                    </dl> <button class="complete-order-button nes-btn is-primary w-100" type="button"
+                        :disabled="isProcessing" @click="completeOrder"> Completar orden </button>
                     <p v-if="paymentError" class="small text-danger mt-3 mb-0" role="alert"> {{ paymentError }} </p>
                 </aside>
             </div>
@@ -177,15 +174,16 @@ onBeforeUnmount(() => {
                 <div class="modal-content payment-status-modal">
                     <div class="modal-body p-4 p-md-5 text-center" aria-live="polite"> <template
                             v-if="paymentStatus === 'processing'">
-                            <div class="spinner-border mb-4" role="status" aria-label="Procesando pago"></div>
-                            <h2 id="payment-status-title" class="fs-5 mb-3"> Procesando pago </h2>
+                            <span class="pixel-spinner mb-4" role="status" aria-label="Procesando pago"></span>
+                            <h2 id="payment-status-title" class="payment-status-title mb-3"> Procesando pago </h2>
                             <p class="small mb-0"> Estamos simulando la autorización del método de pago. </p>
                         </template>
                         <template v-else-if="paymentStatus === 'success'">
-                            <h2 id="payment-status-title" class="fs-4 mb-3"> ¡Gracias por tu compra! </h2>
+                            <h2 id="payment-status-title" class="payment-status-title mb-3"> ¡Gracias por tu compra! </h2>
                             <p class="small mb-2"> La orden se completó correctamente. </p>
-                            <p class="mb-4"> Número de orden: <strong>{{ orderNumber }}</strong> </p> <button
-                                class="return-home-button btn" type="button" @click="finishOrder"> Volver al inicio
+                            <p class="payment-status-order mb-4"> Número de orden: <strong>{{ orderNumber }}</strong> </p>
+                            <button class="return-home-button nes-btn is-primary" type="button" @click="finishOrder">
+                                Volver al inicio
                             </button>
                         </template>
                     </div>
@@ -197,11 +195,22 @@ onBeforeUnmount(() => {
 <style scoped>
 .payment-panel,
 .payment-summary {
+    background-color: #fff;
     color: #151515;
+    box-shadow: 4px 4px 0 #111;
 }
 
 .payment-panel {
     min-height: 550px;
+}
+
+.payment-title,
+.payment-summary__title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
 }
 
 .payment-divider {
@@ -210,58 +219,151 @@ onBeforeUnmount(() => {
     opacity: 1;
 }
 
-.payment-summary__title {
-    font-size: 0.9rem;
-}
-
 .selected-card-message {
     line-height: 1.6;
 }
 
 .payment-summary dt,
 .payment-summary dd {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: normal;
 }
 
 .payment-summary__total dt,
 .payment-summary__total dd {
-    font-size: 0.95rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
     font-weight: bold;
 }
 
-.complete-order-button,
-.return-home-button {
-    border: 3px solid #111;
-    background-color: #54b3ea;
-    box-shadow: 4px 4px 0 #111;
-    color: #111;
-    font-family: inherit;
+.back-checkout-button {
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
     text-transform: uppercase;
 }
 
-.complete-order-button {
-    font-size: 0.7rem;
-}
-
-.complete-order-button:hover:not(:disabled),
-.complete-order-button:focus-visible:not(:disabled),
-.return-home-button:hover,
-.return-home-button:focus-visible {
-    background-color: #feb914;
+.back-checkout-button:hover,
+.back-checkout-button:focus-visible {
     outline: 3px solid #111;
     outline-offset: 3px;
 }
 
-.complete-order-button:disabled {
+.complete-order-button,
+.return-home-button {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+
+/* Paleta del proyecto sobre los botones nes.css */
+.payment-summary .nes-btn.is-primary {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.payment-summary .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.payment-summary .nes-btn.is-primary:hover:not(:disabled),
+.payment-summary .nes-btn.is-primary:focus-visible:not(:disabled) {
+    background-color: #feb914;
+    color: #111;
+}
+
+.payment-summary .nes-btn.is-primary:hover:not(:disabled)::after,
+.payment-summary .nes-btn.is-primary:focus-visible:not(:disabled)::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.payment-summary .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.payment-summary .nes-btn.is-primary:disabled {
     opacity: 0.5;
     cursor: wait;
+}
+
+.complete-order-button:focus-visible {
+    outline: 3px solid #111;
+    outline-offset: 3px;
+}
+
+.payment-status-modal .nes-btn.is-primary {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.payment-status-modal .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.payment-status-modal .nes-btn.is-primary:hover,
+.payment-status-modal .nes-btn.is-primary:focus-visible {
+    background-color: #feb914;
+    color: #111;
+}
+
+.payment-status-modal .nes-btn.is-primary:hover::after,
+.payment-status-modal .nes-btn.is-primary:focus-visible::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.payment-status-modal .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.return-home-button:focus-visible {
+    outline: 3px solid #111;
+    outline-offset: 3px;
 }
 
 .payment-status-modal {
     border: 4px solid #111;
     border-radius: 0;
     box-shadow: 6px 6px 0 #111;
+}
+
+.payment-status-modal .modal-body {
+    background-color: #fff;
+}
+
+.payment-status-title {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
+}
+
+.payment-status-order {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.55rem;
+    line-height: 1.8;
+}
+
+.pixel-spinner {
+    display: inline-block;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 3px solid #111;
+    background-color: #feb914;
+    box-shadow: 4px 4px 0 #111;
+    animation: pixel-spin 0.9s steps(4) infinite;
+}
+
+@keyframes pixel-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media (min-width: 992px) {
