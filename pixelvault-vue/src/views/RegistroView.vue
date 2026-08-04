@@ -129,7 +129,7 @@ function handleSubmit() {
 <template>
   <section class="form-section">
     <div class="container">
-      <div class="form-card">
+      <div class="form-card form-card--registro">
         <div class="form-header">
           <h2>Crear Cuenta</h2>
 
@@ -272,5 +272,9 @@ function handleSubmit() {
 </template>
 
 <style scoped>
-/* No se requiere CSS adicional; todo está en forms.css. */
+/* El formulario de registro necesita más ancho que el de login
+   (max-width: 520px de forms.css) para que quepan los placeholders. */
+.form-card--registro {
+  max-width: 640px;
+}
 </style>

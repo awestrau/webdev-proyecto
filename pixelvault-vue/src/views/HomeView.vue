@@ -200,10 +200,10 @@ const categories = [
 }
 
 .hero-subtitle {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
   color: #a16207;
   font-family: 'Press Start 2P', cursive;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   line-height: 1.8;
   text-transform: uppercase;
 }
@@ -460,7 +460,7 @@ const categories = [
   }
 
   .hero-subtitle {
-    font-size: 0.85rem;
+    font-size: 1.05rem;
   }
 
   .section-title {
