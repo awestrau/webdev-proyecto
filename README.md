@@ -42,3 +42,52 @@ Diseño retro pixeleado basado en [NES.css](https://nostalgic-css.github.io/NES.
 ### Iconos
 
 https://www.streamlinehq.com/icons/pixel
+
+## Ejecución del proyecto
+
+La aplicación web está desarrollada con **Vue 3 + Vite** y se encuentra en la carpeta [`pixelvault-vue/`](./pixelvault-vue).
+
+### Requisitos
+
+- **Node.js** `^22.18.0` o `>=24.12.0`
+- **npm** (incluido con Node.js)
+
+### Instalación de dependencias
+
+```sh
+cd pixelvault-vue
+npm install
+```
+
+### Servidor de desarrollo (con recarga en caliente)
+
+```sh
+npm run dev
+```
+
+Se levanta en <http://localhost:5173>.
+
+### Compilación para producción
+
+```sh
+npm run build
+```
+
+El resultado se genera en `pixelvault-vue/dist/`.
+
+### Vista previa de la compilación
+
+```sh
+npm run preview
+```
+
+### Rutas principales
+
+| Ruta | Descripción |
+|---|---|
+| `/` | Landing page |
+| `/products` | Catálogo de productos |
+| `/producto/:id` | Detalle de un producto |
+| `/login` y `/registro` | Iniciar sesión y crear cuenta |
+| `/mi_carrito` | Carrito de compras (incluye checkout y pago) |
+| `/guardados` | Productos guardados en favoritos |
