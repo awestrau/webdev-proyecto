@@ -52,10 +52,25 @@ La aplicación web está desarrollada con **Vue 3 + Vite** y se encuentra en la 
 - **Node.js** `^22.18.0` o `>=24.12.0`
 - **npm** (incluido con Node.js)
 
+### Clonación del repositorio
+
+Con HTTPS:
+
+```sh
+git clone https://github.com/awestrau/webdev-proyecto.git
+cd webdev-proyecto/pixelvault-vue
+```
+
+Con SSH:
+
+```sh
+git clone git@github.com:awestrau/webdev-proyecto.git
+cd webdev-proyecto/pixelvault-vue
+```
+
 ### Instalación de dependencias
 
 ```sh
-cd pixelvault-vue
 npm install
 ```
 
