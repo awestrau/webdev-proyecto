@@ -9,9 +9,6 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-    redirect: {
-      name: 'products',
-    },
   },
   {
     path: '/login',

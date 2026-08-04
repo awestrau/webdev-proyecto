@@ -3,6 +3,7 @@ import { computed } from 'vue'
 
 import AddressList from './AddressList.vue'
 import AddressForm from './AddressForm.vue'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
   addresses: {
@@ -63,13 +64,6 @@ const selectedShipping = computed(() => {
 const canContinue = computed(() => {
   return Boolean(props.selectedAddressId && props.selectedShippingId)
 })
-
-function formatCurrency(value) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-  }).format(value)
-}
 </script>
 
 <template>

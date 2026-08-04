@@ -1,4 +1,3 @@
-```vue
 <script setup>
 import progressIcon from '../../assets/icons/progress.svg'
 import nextIcon from '../../assets/icons/next.svg'
@@ -69,4 +68,3 @@ const checkoutSteps = [
 }
 
 </style>
-```

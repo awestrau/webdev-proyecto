@@ -1,29 +1,28 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 import CheckoutProgress from '../components/cart/CheckoutProgress.vue'
 import CartList from '../components/cart/CartList.vue'
 import OrderSummary from '../components/cart/OrderSummary.vue'
 import CheckoutAddress from '../components/checkout/CheckoutAddress.vue'
-
-const currentStep = ref('cart')
-const appliedCoupon = ref(null)
-const couponError = ref('')
-const selectedProduct = ref(null)
-
 import CheckoutPayment from '../components/payment/CheckoutPayment.vue'
-
-import { useRouter } from 'vue-router'
-const router = useRouter()
-
 
 import products from '../data/products.json'
 import promotionCodes from '../data/promotionCodes.json'
 import addressesData from '../data/addresses.json'
 import shippingOptionsData from '../data/shippingOptions.json'
 import paymentMethodsData from '../data/paymentMethods.json'
+import { formatCurrency } from '../utils/formatCurrency'
 
 import { useCart } from '../composables/useCart'
+
+const router = useRouter()
+
+const currentStep = ref('cart')
+const appliedCoupon = ref(null)
+const couponError = ref('')
+const selectedProduct = ref(null)
 
 /*
  * Catálogo simulado.
@@ -59,42 +58,10 @@ const paymentMethods = ref(
 /*
  * Códigos disponibles para la simulación.
  *
- * HOLIDAY aplica un descuento fijo de $15.
+ * HOLIDAY aplica un descuento fijo de ₡7.500.
  * PLAYER20 aplica un 20% de descuento.
  * RETRO10 aplica un 10% de descuento.
  */
-
-
-
-/*function createCartItem(productId, quantity = 1) {
-    const product = products.find((item) => item.id === productId)
-
-    if (!product) {
-        throw new Error(`No se encontró el producto con ID ${productId}`)
-    }
-
-    return {
-        ...product,
-        quantity,
-    }
-}*/
-
-
-
-/*const cartItems = ref([
-    createCartItem(5, 1),
-    createCartItem(7, 2),
-    createCartItem(10, 1),
-])
-
-const subtotal = computed(() => {
-    const value = cartItems.value.reduce((total, product) => {
-        return total + product.price * product.quantity
-    }, 0)
-
-    return roundCurrency(value)
-})*/
-
 
 const discountAmount = computed(() => {
     if (!appliedCoupon.value) {
@@ -129,41 +96,6 @@ function roundCurrency(value) {
     return Math.round((value + Number.EPSILON) * 100) / 100
 }
 
-/*function increaseQuantity(productId) {
-    const product = cartItems.value.find((item) => item.id === productId)
-
-    if (!product) {
-        return
-    }
-
-    product.quantity += 1
-}*/
-
-/*function decreaseQuantity(productId) {
-    const product = cartItems.value.find((item) => item.id === productId)
-
-    if (!product || product.quantity <= 1) {
-        return
-    }
-
-    product.quantity -= 1
-}*/
-
-/*function removeProduct(productId) {
-    cartItems.value = cartItems.value.filter((item) => {
-        return item.id !== productId
-    })
-
-    if (selectedProduct.value?.id === productId) {
-        selectedProduct.value = null
-    }
-}
-
-/*function clearCart() {
-    cartItems.value = []
-    selectedProduct.value = null
-}*/
-
 function removeProduct(productId) {
   removeCartProduct(productId)
 
@@ -176,35 +108,6 @@ function clearCart() {
   clearStoredCart()
   selectedProduct.value = null
 }
-
-
-
-/*function applyCoupon(code) {
-    couponError.value = ''
-
-    if (appliedCoupon.value) {
-        couponError.value = 'Ya existe un código aplicado a esta orden.'
-        return
-    }
-
-    if (!code) {
-        couponError.value = 'Ingresa un código de promoción.'
-        return
-    }
-
-    const normalizedCode = code.trim().toUpperCase()
-    const promotion = promotionCodes[normalizedCode]
-
-    if (!promotion) {
-        couponError.value = 'El código ingresado no es válido.'
-        return
-    }
-
-    appliedCoupon.value = {
-        code: normalizedCode,
-        ...promotion,
-    }
-}*/
 
 function applyCoupon(code) {
   couponError.value = ''
@@ -235,7 +138,6 @@ function applyCoupon(code) {
   }
 }
 
-
 function removeCoupon() {
     appliedCoupon.value = null
     couponError.value = ''
@@ -249,10 +151,6 @@ function continueToCheckout() {
     selectedProduct.value = null
     currentStep.value = 'checkout'
 }
-
-/*function continueToPayment() {
-    currentStep.value = 'payment'
-}*/
 
 function showProductDetails(productId) {
     selectedProduct.value = products.find((product) => {
@@ -273,17 +171,9 @@ watch(subtotal, (newSubtotal) => {
     }
 })
 
-
-
 //Seccion checkout
 const selectedAddressId = ref(addresses.value[0]?.id ?? null)
 const selectedShippingId = ref('express')
-
-/*const totalProductUnits = computed(() => {
-    return cartItems.value.reduce((total, product) => {
-        return total + product.quantity
-    }, 0)
-})*/
 
 const selectedShipping = computed(() => {
     return shippingOptions.find((option) => {
@@ -346,7 +236,6 @@ function continueToPayment() {
     currentStep.value = 'payment'
 }
 
-
 //SECCION PAGO
 const selectedPaymentMethodId = ref(null)
 //Funciones
@@ -382,8 +271,6 @@ function addPaymentMethod(paymentMethodData) {
 }
 
 function handleOrderCompleted(completedOrder) {
-    console.log('Orden completada:', completedOrder)
-
     clearCart()
     removeCoupon()
 
@@ -395,9 +282,7 @@ function handleOrderCompleted(completedOrder) {
      * Reemplaza la pantalla de pago por el landing page.
      */
     router.replace({ name: 'home' })
-    //window.location.href = '/'
 }
-
 </script>
 
 <template>
@@ -464,7 +349,7 @@ function handleOrderCompleted(completedOrder) {
 
                                 <dt class="col-5">Precio:</dt>
                                 <dd class="col-7">
-                                    ${{ selectedProduct.price.toFixed(2) }}
+                                    {{ formatCurrency(selectedProduct.price) }}
                                 </dd>
 
                                 <dt class="col-12 mt-3">Descripción:</dt>

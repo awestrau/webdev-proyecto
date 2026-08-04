@@ -3,9 +3,12 @@ import {
     computed,
     onBeforeUnmount,
     ref,
+    watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
 import Modal from 'bootstrap/js/dist/modal'
+
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     product: {
@@ -16,16 +19,21 @@ const props = defineProps({
 
 const router = useRouter()
 const modalElement = ref(null)
+const imageFailed = ref(false)
 
 const mainImage = computed(() => {
     return props.product?.images?.[0] ?? ''
 })
 
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
+watch(
+    () => props.product?.images,
+    () => {
+        imageFailed.value = false
+    },
+)
+
+function handleImageError() {
+    imageFailed.value = true
 }
 
 function goToProductDetails() {
@@ -79,7 +87,8 @@ onBeforeUnmount(() => {
                             <div class="favorite-modal-image d-flex
                        align-items-center justify-content-center
                        bg-warning-subtle">
-                                <img v-if="mainImage" :src="mainImage" :alt="product.name">
+                                <img v-if="mainImage && !imageFailed" :src="mainImage" :alt="product.name"
+                                    @error="handleImageError">
 
                                 <span v-else class="small text-center">
                                     Imagen no disponible

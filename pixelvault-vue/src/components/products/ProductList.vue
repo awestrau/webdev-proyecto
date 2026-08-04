@@ -26,7 +26,7 @@ function isFavorite(productId) {
 </script>
 
 <template>
-    <div v-if="products.length === 0" class="products-empty bg-warning-subtle p-4 p-md-5 text-center" role="status">
+    <div v-if="products.length === 0" class="products-empty nes-container text-center" role="status">
         <h2 class="fs-4 mb-3">
             No se encontraron productos
         </h2>
@@ -50,5 +50,20 @@ function isFavorite(productId) {
     margin-inline: auto;
     border: 3px solid #111;
     box-shadow: 4px 4px 0 #111;
+    background-color: #fff;
+    color: #151515;
+}
+
+.products-empty h2 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+}
+
+.products-empty p {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.8;
 }
 </style>

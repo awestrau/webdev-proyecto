@@ -1,4 +1,6 @@
 <script setup>
+import { formatCurrency } from '../../utils/formatCurrency'
+
 defineProps({
     product: {
         type: Object,
@@ -15,17 +17,10 @@ const emit = defineEmits([
     'add-to-cart',
     'toggle-favorite',
 ])
-
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
-}
 </script>
 
 <template>
-    <aside class="product-purchase-panel d-flex flex-column p-4 p-md-5 bg-secondary-subtle"
+    <aside class="product-purchase-panel nes-container is-rounded d-flex flex-column"
         aria-labelledby="product-name">
         <p class="product-platform mb-4">
             {{ product.platform }}
@@ -40,12 +35,12 @@ function formatCurrency(value) {
         </p>
 
         <div class="d-flex flex-column align-items-center gap-3 mt-auto">
-            <button class="add-cart-button btn w-100 py-3" type="button" @click="emit('add-to-cart')">
+            <button class="add-cart-button nes-btn is-primary w-100" type="button" @click="emit('add-to-cart')">
                 Agregar al carrito
             </button>
 
-            <button class="favorite-button btn py-3 px-4" type="button" :aria-pressed="favorite"
-                @click="emit('toggle-favorite')">
+            <button class="favorite-button nes-btn py-3 px-4" :class="favorite ? 'is-error' : 'is-warning'"
+                type="button" :aria-pressed="favorite" @click="emit('toggle-favorite')">
                 {{ favorite ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
             </button>
         </div>
@@ -55,46 +50,128 @@ function formatCurrency(value) {
 <style scoped>
 .product-purchase-panel {
     min-height: 420px;
-    border-radius: 1.5rem;
+    background-color: #fff;
     color: #151515;
+    box-shadow: 4px 4px 0 #111;
 }
 
 .product-platform {
-    font-size: 0.8rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.8;
+    color: #1a1f1f;
+    text-transform: uppercase;
 }
 
 .product-name {
-    font-size: clamp(1.7rem, 5vw, 2.7rem);
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(0.85rem, 4vw, 1.25rem);
+    line-height: 1.8;
+    color: #1a1f1f;
+    text-transform: uppercase;
     overflow-wrap: anywhere;
 }
 
 .product-price {
-    font-size: 1.15rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: #1a1f1f;
 }
 
 .add-cart-button,
 .favorite-button {
-    border: 3px solid #111;
-    color: #111;
-    font-family: inherit;
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.6;
     text-transform: uppercase;
 }
 
 .add-cart-button {
     max-width: 340px;
-    background-color: #54b3ea;
-    box-shadow: 4px 4px 0 #111;
+    padding: 0.9rem 1rem;
 }
 
 .favorite-button {
-    background-color: #fff1d7;
+    padding: 0.9rem 1.5rem;
 }
 
-.add-cart-button:hover,
-.add-cart-button:focus-visible,
-.favorite-button:hover,
-.favorite-button:focus-visible {
+/* Paleta del proyecto sobre los botones nes.css */
+.product-purchase-panel .nes-btn.is-primary {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.product-purchase-panel .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.product-purchase-panel .nes-btn.is-primary:hover,
+.product-purchase-panel .nes-btn.is-primary:focus-visible {
     background-color: #feb914;
+    color: #111;
+}
+
+.product-purchase-panel .nes-btn.is-primary:hover::after,
+.product-purchase-panel .nes-btn.is-primary:focus-visible::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.product-purchase-panel .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.product-purchase-panel .nes-btn.is-warning {
+    background-color: #feb914;
+    color: #111;
+}
+
+.product-purchase-panel .nes-btn.is-warning::after {
+    box-shadow: inset -4px -4px #e5a800;
+}
+
+.product-purchase-panel .nes-btn.is-warning:hover,
+.product-purchase-panel .nes-btn.is-warning:focus-visible {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.product-purchase-panel .nes-btn.is-warning:hover::after,
+.product-purchase-panel .nes-btn.is-warning:focus-visible::after {
+    box-shadow: inset -6px -6px #3a8ec7;
+}
+
+.product-purchase-panel .nes-btn.is-warning:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #e5a800;
+}
+
+.product-purchase-panel .nes-btn.is-error {
+    background-color: #e45b61;
+    color: #fff;
+}
+
+.product-purchase-panel .nes-btn.is-error::after {
+    box-shadow: inset -4px -4px #8c2022;
+}
+
+.product-purchase-panel .nes-btn.is-error:hover,
+.product-purchase-panel .nes-btn.is-error:focus-visible {
+    background-color: #ce372b;
+    color: #fff;
+}
+
+.product-purchase-panel .nes-btn.is-error:hover::after,
+.product-purchase-panel .nes-btn.is-error:focus-visible::after {
+    box-shadow: inset -6px -6px #8c2022;
+}
+
+.product-purchase-panel .nes-btn.is-error:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #8c2022;
+}
+
+.add-cart-button:focus-visible,
+.favorite-button:focus-visible {
     outline: 3px solid #111;
     outline-offset: 3px;
 }

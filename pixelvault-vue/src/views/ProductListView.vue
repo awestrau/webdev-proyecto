@@ -158,7 +158,7 @@ onBeforeUnmount(() => {
             <ProductFilter :categories="availableCategories" :platforms="availablePlatforms"
                 :result-count="filteredProducts.length" />
 
-            <section class="products-panel bg-secondary-subtle p-3 p-md-4 p-xl-5" aria-labelledby="products-title">
+            <section class="products-panel nes-container is-rounded" aria-labelledby="products-title">
                 <div class="d-flex flex-wrap align-items-baseline
                  justify-content-between gap-3 mb-4 mb-md-5">
                     <h1 id="products-title" class="m-0 fs-2">
@@ -199,15 +199,32 @@ onBeforeUnmount(() => {
 
 .products-panel {
     min-height: 650px;
+    background-color: #fff;
+    color: #151515;
+    box-shadow: 4px 4px 0 #111;
+}
+
+.products-panel h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1rem;
+    line-height: 1.8;
+    text-transform: uppercase;
+    color: #1a1f1f;
 }
 
 .products-count {
-    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.65rem;
+    color: #1a1f1f;
+    background-color: #feb914;
+    border: 3px solid #111;
+    box-shadow: 3px 3px 0 #111;
+    padding: 0.45rem 0.65rem;
 }
 
 @media (min-width: 1200px) {
     .products-panel {
-        padding-inline: 3.5rem !important;
+        padding-inline: 2.5rem;
     }
 }
 </style>

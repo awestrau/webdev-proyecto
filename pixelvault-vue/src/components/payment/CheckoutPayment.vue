@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref, watch, } from 'vue'
 import Modal from 'bootstrap/js/dist/modal'
 import PaymentMethodList from './PaymentMethodList.vue'
 import PaymentMethodForm from './PaymentMethodForm.vue'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     paymentMethods: {
@@ -62,10 +63,6 @@ const isProcessing = computed(() => {
 watch(selectedPaymentMethod, (paymentMethod) => {
     if (paymentMethod) { paymentError.value = '' }
 })
-
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', }).format(value)
-}
 
 function generateOrderNumber() {
     const randomNumber = Math.floor(100000 + Math.random() * 900000)

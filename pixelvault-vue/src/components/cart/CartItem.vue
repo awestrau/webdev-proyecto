@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import removeIcon from '../../assets/icons/remove.svg'
 import minusIcon from '../../assets/icons/minus.svg'
 import plusIcon from '../../assets/icons/plus.svg'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     product: {
@@ -38,13 +39,6 @@ const formattedUnitPrice = computed(() => {
 const formattedItemTotal = computed(() => {
     return formatCurrency(itemTotal.value)
 })
-
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
-}
 </script>
 
 <template>

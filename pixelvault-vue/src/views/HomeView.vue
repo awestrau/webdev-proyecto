@@ -1,11 +1,17 @@
 <script setup>
+import { ref } from 'vue'
+
+import { formatCurrency } from '../utils/formatCurrency'
+
+const failedImages = ref(new Set())
+
 const products = [
   {
     id: 'nes-classic',
     name: 'NES Classic Edition',
     category: 'Consola',
     badgeClass: 'badge-console',
-    price: '₡45,000',
+    price: 45000,
     image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=250&fit=crop',
     alt: 'NES Classic Edition',
   },
@@ -14,7 +20,7 @@ const products = [
     name: 'Super Mario World',
     category: 'Juego',
     badgeClass: 'badge-game',
-    price: '₡12,500',
+    price: 12500,
     image: 'https://images.unsplash.com/photo-1511882150382-421056c89033?w=400&h=250&fit=crop',
     alt: 'Super Mario World',
   },
@@ -23,11 +29,18 @@ const products = [
     name: 'Game Boy Color',
     category: 'Consola',
     badgeClass: 'badge-console',
-    price: '₡30,000',
+    price: 30000,
     image: 'https://images.unsplash.com/photo-1555864326-5cf22ef123cf?w=400&h=250&fit=crop',
     alt: 'Game Boy Color',
   },
 ]
+
+function handleImageError(productId) {
+  failedImages.value = new Set([
+    ...failedImages.value,
+    productId,
+  ])
+}
 
 const categories = [
   {
@@ -81,7 +94,13 @@ const categories = [
         <div v-for="product in products" :key="product.id" class="col-md-4">
           <article class="nes-container is-rounded product-card">
             <div class="product-img-wrapper">
-              <img :src="product.image" :alt="product.alt" class="product-img">
+              <img v-if="!failedImages.has(product.id)" :src="product.image" :alt="product.alt" class="product-img"
+                @error="handleImageError(product.id)">
+
+              <span v-else class="product-img-placeholder d-flex align-items-center justify-content-center text-center p-3"
+                role="img" :aria-label="product.alt">
+                Imagen no disponible
+              </span>
             </div>
 
             <div class="product-body">
@@ -91,9 +110,10 @@ const categories = [
 
               <h3 class="product-name">{{ product.name }}</h3>
 
-              <p class="product-price">{{ product.price }}</p>
+              <p class="product-price">{{ formatCurrency(product.price) }}</p>
 
-              <a href="#" class="nes-btn is-primary w-100" :aria-label="`Ver ${product.name}`">Ver Producto</a>
+              <router-link :to="{ name: 'products' }" class="nes-btn is-primary w-100"
+                :aria-label="`Ver ${product.name}`">Ver Producto</router-link>
             </div>
           </article>
         </div>
@@ -274,6 +294,16 @@ const categories = [
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.product-img-placeholder {
+  width: 100%;
+  height: 100%;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1.8;
+  color: #1a1f1f;
+  background-color: #fff1d7;
 }
 
 .product-body {

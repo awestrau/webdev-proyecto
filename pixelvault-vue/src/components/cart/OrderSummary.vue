@@ -1,8 +1,8 @@
-```vue
 <script setup>
 import { ref, watch } from 'vue'
 
 import removeIcon from '../../assets/icons/remove.svg'
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     subtotal: {
@@ -57,13 +57,6 @@ function submitCoupon() {
     }
 
     emit('apply-coupon', promoCode.value.trim())
-}
-
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
 }
 </script>
 
@@ -137,7 +130,7 @@ function formatCurrency(value) {
             <div class="d-flex justify-content-between gap-3">
                 <dt>Descuento</dt>
                 <dd class="mb-0">
-                    -{{ formatCurrency(discount) }}
+                    {{ discount > 0 ? `-${formatCurrency(discount)}` : formatCurrency(discount) }}
                 </dd>
             </div>
 
@@ -240,4 +233,3 @@ function formatCurrency(value) {
     outline-offset: 3px;
 }
 </style>
-```

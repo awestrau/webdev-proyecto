@@ -1,6 +1,12 @@
 <script setup>
-import { computed } from 'vue'
+import {
+    computed,
+    ref,
+    watch,
+} from 'vue'
 import { RouterLink } from 'vue-router'
+
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     product: {
@@ -19,21 +25,26 @@ const emit = defineEmits([
     'toggle-favorite',
 ])
 
+const imageFailed = ref(false)
+
 const mainImage = computed(() => {
     return props.product.images?.[0] ?? ''
 })
 
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
+watch(
+    () => props.product.images,
+    () => {
+        imageFailed.value = false
+    },
+)
+
+function handleImageError() {
+    imageFailed.value = true
 }
 </script>
 
 <template>
-    <article class="product-card d-flex flex-column h-100
-           p-3 bg-warning-subtle">
+    <article class="product-card nes-container is-rounded d-flex flex-column h-100">
         <header class="text-center mb-3">
             <RouterLink :to="{
                 name: 'product-detail',
@@ -64,7 +75,8 @@ function formatCurrency(value) {
         }" class="product-image-link d-block mb-3" :aria-label="`Ver detalles de ${product.name}`">
             <span class="product-card__image d-flex
                align-items-center justify-content-center">
-                <img v-if="mainImage" :src="mainImage" :alt="product.name">
+                <img v-if="mainImage && !imageFailed" :src="mainImage" :alt="product.name"
+                    @error="handleImageError">
 
                 <span v-else class="small text-center p-3">
                     Imagen no disponible
@@ -77,12 +89,13 @@ function formatCurrency(value) {
         </p>
 
         <div class="d-flex flex-column flex-sm-row gap-3 mt-auto">
-            <button class="product-action-button btn flex-fill" type="button" @click="emit('add-to-cart', product.id)">
+            <button class="product-action-button nes-btn is-primary flex-fill" type="button"
+                @click="emit('add-to-cart', product.id)">
                 Agregar al carrito
             </button>
 
-            <button class="product-action-button btn flex-fill" type="button" :aria-pressed="favorite"
-                @click="emit('toggle-favorite', product.id)">
+            <button class="product-action-button nes-btn flex-fill" :class="favorite ? 'is-error' : 'is-warning'"
+                type="button" :aria-pressed="favorite" @click="emit('toggle-favorite', product.id)">
                 {{ favorite ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
             </button>
         </div>
@@ -94,8 +107,9 @@ function formatCurrency(value) {
     width: 100%;
     max-width: 390px;
     margin-inline: auto;
-    border-radius: 1.5rem;
     color: #151515;
+    background-color: #fff;
+    box-shadow: 4px 4px 0 #111;
 }
 
 .product-name-link {
@@ -113,14 +127,17 @@ function formatCurrency(value) {
 
 .product-card__name {
     min-height: 2.6rem;
-    font-size: 0.8rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.58rem;
     line-height: 1.6;
     overflow-wrap: anywhere;
+    text-transform: uppercase;
 }
 
 .product-card__platform,
 .product-card__category {
-    font-size: 0.62rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.5rem;
     line-height: 1.5;
 }
 
@@ -133,7 +150,6 @@ function formatCurrency(value) {
     overflow: hidden;
     aspect-ratio: 1;
     border: 4px solid transparent;
-    border-radius: 1.5rem;
     background-color: #6c3d0c;
     transition:
         border-color 150ms ease,
@@ -158,24 +174,93 @@ function formatCurrency(value) {
 }
 
 .product-card__price {
-    font-size: 0.75rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.7rem;
 }
 
 .product-action-button {
     min-height: 62px;
-    border: 3px solid #111;
-    border-radius: 1.4rem;
-    background-color: #54b3ea;
-    color: #111;
-    font-family: inherit;
+    margin: 0;
+    font-family: 'Press Start 2P', cursive;
     font-size: 0.58rem;
     line-height: 1.6;
     text-transform: uppercase;
 }
 
-.product-action-button:hover,
-.product-action-button:focus-visible {
+/* Paleta del proyecto sobre los botones nes.css */
+.product-card .nes-btn.is-primary {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.product-card .nes-btn.is-primary::after {
+    box-shadow: inset -4px -4px #3a8ec7;
+}
+
+.product-card .nes-btn.is-primary:hover,
+.product-card .nes-btn.is-primary:focus-visible {
     background-color: #feb914;
+    color: #111;
+}
+
+.product-card .nes-btn.is-primary:hover::after,
+.product-card .nes-btn.is-primary:focus-visible::after {
+    box-shadow: inset -6px -6px #e5a800;
+}
+
+.product-card .nes-btn.is-primary:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #3a8ec7;
+}
+
+.product-card .nes-btn.is-warning {
+    background-color: #feb914;
+    color: #111;
+}
+
+.product-card .nes-btn.is-warning::after {
+    box-shadow: inset -4px -4px #e5a800;
+}
+
+.product-card .nes-btn.is-warning:hover,
+.product-card .nes-btn.is-warning:focus-visible {
+    background-color: #54b3ea;
+    color: #111;
+}
+
+.product-card .nes-btn.is-warning:hover::after,
+.product-card .nes-btn.is-warning:focus-visible::after {
+    box-shadow: inset -6px -6px #3a8ec7;
+}
+
+.product-card .nes-btn.is-warning:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #e5a800;
+}
+
+.product-card .nes-btn.is-error {
+    background-color: #e45b61;
+    color: #fff;
+}
+
+.product-card .nes-btn.is-error::after {
+    box-shadow: inset -4px -4px #8c2022;
+}
+
+.product-card .nes-btn.is-error:hover,
+.product-card .nes-btn.is-error:focus-visible {
+    background-color: #ce372b;
+    color: #fff;
+}
+
+.product-card .nes-btn.is-error:hover::after,
+.product-card .nes-btn.is-error:focus-visible::after {
+    box-shadow: inset -6px -6px #8c2022;
+}
+
+.product-card .nes-btn.is-error:active:not(.is-disabled)::after {
+    box-shadow: inset 4px 4px #8c2022;
+}
+
+.product-action-button:focus-visible {
     outline: 3px solid #111;
     outline-offset: 3px;
 }

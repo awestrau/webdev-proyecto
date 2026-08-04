@@ -1,5 +1,11 @@
 <script setup>
-import { computed } from 'vue'
+import {
+    computed,
+    ref,
+    watch,
+} from 'vue'
+
+import { formatCurrency } from '../../utils/formatCurrency'
 
 const props = defineProps({
     product: {
@@ -14,15 +20,21 @@ const emit = defineEmits([
     'open-details',
 ])
 
+const imageFailed = ref(false)
+
 const mainImage = computed(() => {
     return props.product.images?.[0] ?? ''
 })
 
-function formatCurrency(value) {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-    }).format(value)
+watch(
+    () => props.product.images,
+    () => {
+        imageFailed.value = false
+    },
+)
+
+function handleImageError() {
+    imageFailed.value = true
 }
 </script>
 
@@ -46,7 +58,8 @@ function formatCurrency(value) {
             @click="emit('open-details', product)">
             <span class="favorite-product-image d-flex align-items-center
                justify-content-center">
-                <img v-if="mainImage" :src="mainImage" :alt="product.name">
+                <img v-if="mainImage && !imageFailed" :src="mainImage" :alt="product.name"
+                    @error="handleImageError">
 
                 <span v-else class="small text-center p-3" aria-hidden="true">
                     Imagen no disponible
