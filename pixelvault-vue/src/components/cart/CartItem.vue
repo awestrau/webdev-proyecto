@@ -1,5 +1,9 @@
 <script setup>
-import { computed } from 'vue'
+import {
+    computed,
+    ref,
+    watch,
+} from 'vue'
 
 import removeIcon from '../../assets/icons/remove.svg'
 import minusIcon from '../../assets/icons/minus.svg'
@@ -28,6 +32,12 @@ const emit = defineEmits([
     'view-details',
 ])
 
+const imageFailed = ref(false)
+
+const mainImage = computed(() => {
+    return props.product.images?.[0] ?? ''
+})
+
 const itemTotal = computed(() => {
     return props.product.price * props.product.quantity
 })
@@ -39,6 +49,17 @@ const formattedUnitPrice = computed(() => {
 const formattedItemTotal = computed(() => {
     return formatCurrency(itemTotal.value)
 })
+
+watch(
+    () => props.product.images,
+    () => {
+        imageFailed.value = false
+    },
+)
+
+function handleImageError() {
+    imageFailed.value = true
+}
 </script>
 
 <template>
@@ -48,11 +69,12 @@ const formattedItemTotal = computed(() => {
             <div class="col-4 col-sm-3 col-md-2 order-md-1">
                 <div class="cart-item__image ratio ratio-1x1" :aria-label="`Imagen de ${product.name}`"
                     role="img">
-                    <img v-if="product.image" :src="product.image" :alt="product.name" class="cart-product-image">
+                    <img v-if="mainImage && !imageFailed" :src="mainImage" :alt="product.name"
+                        class="cart-product-image" @error="handleImageError">
 
                     <span v-else class="cart-image-placeholder d-flex align-items-center
-                   justify-content-center text-center p-1" aria-hidden="true">
-                        {{ product.category }}
+                   justify-content-center text-center p-1">
+                        Imagen no disponible
                     </span>
                 </div>
             </div>
@@ -147,8 +169,7 @@ const formattedItemTotal = computed(() => {
 .cart-product-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    image-rendering: pixelated;
+    object-fit: contain;
 }
 
 .cart-image-placeholder {
