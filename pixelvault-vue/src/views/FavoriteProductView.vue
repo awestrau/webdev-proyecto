@@ -2,6 +2,7 @@
 import {
     computed,
     onBeforeUnmount,
+    onMounted,
     ref,
 } from 'vue'
 
@@ -10,14 +11,20 @@ import FavoriteProductModal from '../components/favorites/FavoriteProductModal.v
 
 import { useCart } from '../composables/useCart'
 import { useFavorites } from '../composables/useFavorites'
-
-import products from '../data/products.json'
+import { useProducts } from '../composables/useProducts'
 
 const selectedProduct = ref(null)
 const feedbackMessage = ref('')
 const feedbackType = ref('success')
 
 let feedbackTimer = null
+
+const {
+    products,
+    loadingProducts,
+    productsError,
+    loadProducts,
+} = useProducts()
 
 const {
     addToCart,
@@ -31,8 +38,8 @@ const {
 const favoriteProducts = computed(() => {
     return favoriteProductIds.value
         .map((productId) => {
-            return products.find((product) => {
-                return Number(product.id) === Number(productId)
+            return products.value.find((product) => {
+                return String(product.id) === String(productId)
             })
         })
         .filter(Boolean)
@@ -65,8 +72,8 @@ function openProductDetails(product) {
 }
 
 function addProductToCart(productId) {
-    const product = products.find((item) => {
-        return Number(item.id) === Number(productId)
+    const product = products.value.find((item) => {
+        return String(item.id) === String(productId)
     })
 
     if (!product) {
@@ -87,8 +94,8 @@ function addProductToCart(productId) {
 }
 
 function removeProductFromFavorites(productId) {
-    const product = products.find((item) => {
-        return Number(item.id) === Number(productId)
+    const product = products.value.find((item) => {
+        return String(item.id) === String(productId)
     })
 
     removeFavorite(productId)
@@ -105,6 +112,14 @@ onBeforeUnmount(() => {
         window.clearTimeout(feedbackTimer)
     }
 })
+
+onMounted(() => {
+    loadProducts().catch(() => {})
+})
+
+function retryProducts() {
+    loadProducts({ force: true }).catch(() => {})
+}
 </script>
 
 <template>
@@ -128,8 +143,20 @@ onBeforeUnmount(() => {
                     {{ feedbackMessage }}
                 </div>
 
+                <div v-if="loadingProducts" class="favorites-empty nes-container text-center" role="status">
+                    Cargando productos guardados...
+                </div>
+
+                <div v-else-if="productsError" class="favorites-empty nes-container text-center" role="alert">
+                    <h2 class="favorites-empty__title mb-3">API no disponible</h2>
+                    <p class="favorites-empty__text mb-4">{{ productsError }}</p>
+                    <button class="empty-action-button nes-btn is-primary" type="button" @click="retryProducts">
+                        Reintentar
+                    </button>
+                </div>
+
                 <!-- No hay favoritos -->
-                <div v-if="favoriteProducts.length === 0"
+                <div v-else-if="favoriteProducts.length === 0"
                     class="favorites-empty nes-container text-center" role="status">
                     <h2 class="favorites-empty__title mb-3">
                         No tienes productos guardados

@@ -1,28 +1,18 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
-import products from '../data/products.json'
+import { useProducts } from '../composables/useProducts'
 import { formatCurrency } from '../utils/formatCurrency'
+
+const { products, loadProducts } = useProducts()
 
 const failedImages = ref(new Set())
 
-/*
- * Destacados reales del catálogo, en orden retro de mayor a menor impacto:
- * 11 - Super Nintendo Entertainment System, 12 - Super Mario World, 10 - PlayStation 2 Slim.
- */
-const featuredProductIds = [11, 12, 10]
-
+// MongoDB genera ObjectId, por eso se muestran los tres productos activos más recientes.
 const featuredProducts = computed(() => {
-  return featuredProductIds
-    .map((productId) => {
-      const product = products.find((item) => {
-        return Number(item.id) === productId
-      })
-
-      if (!product) {
-        return null
-      }
-
+  return products.value
+    .slice(0, 3)
+    .map((product) => {
       return {
         id: product.id,
         name: product.name,
@@ -33,7 +23,10 @@ const featuredProducts = computed(() => {
         alt: product.name,
       }
     })
-    .filter(Boolean)
+})
+
+onMounted(() => {
+  loadProducts().catch(() => {})
 })
 
 function getBadgeClass(category) {

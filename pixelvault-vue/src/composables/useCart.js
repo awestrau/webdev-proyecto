@@ -1,4 +1,9 @@
-import { computed, ref, watch } from 'vue'
+import {
+  computed,
+  ref,
+  unref,
+  watch,
+} from 'vue'
 
 const CART_STORAGE_KEY = 'pixelvault-cart'
 
@@ -22,10 +27,10 @@ function loadCart() {
      */
     return storedCart
       .map((item) => ({
-        productId: Number(item.productId ?? item.id),
+        productId: String(item.productId ?? item.id ?? '').trim(),
         quantity: Math.max(1, Number(item.quantity) || 1),
       }))
-      .filter((item) => Number.isInteger(item.productId))
+      .filter((item) => item.productId)
   } catch (error) {
     console.error('No se pudo leer el carrito:', error)
     return []
@@ -51,12 +56,20 @@ watch(
   },
 )
 
-export function useCart(products = []) {
+export function useCart(productsSource = []) {
+  function getProducts() {
+    const currentProducts = unref(productsSource)
+
+    return Array.isArray(currentProducts)
+      ? currentProducts
+      : []
+  }
+
   const cartItems = computed(() => {
     return cartEntries.value
       .map((entry) => {
-        const product = products.find((item) => {
-          return Number(item.id) === entry.productId
+        const product = getProducts().find((item) => {
+          return String(item.id) === entry.productId
         })
 
         if (!product) {
@@ -84,11 +97,11 @@ export function useCart(products = []) {
   })
 
   function addToCart(productId, quantity = 1) {
-    const normalizedId = Number(productId)
+    const normalizedId = String(productId ?? '').trim()
     const normalizedQuantity = Math.max(1, Number(quantity) || 1)
 
-    const productExists = products.some((product) => {
-      return Number(product.id) === normalizedId
+    const productExists = getProducts().some((product) => {
+      return String(product.id) === normalizedId
     })
 
     if (!productExists) {
@@ -113,7 +126,7 @@ export function useCart(products = []) {
 
   function increaseQuantity(productId) {
     const entry = cartEntries.value.find((item) => {
-      return item.productId === Number(productId)
+      return item.productId === String(productId)
     })
 
     if (entry) {
@@ -123,7 +136,7 @@ export function useCart(products = []) {
 
   function decreaseQuantity(productId) {
     const entry = cartEntries.value.find((item) => {
-      return item.productId === Number(productId)
+      return item.productId === String(productId)
     })
 
     if (entry && entry.quantity > 1) {
@@ -133,7 +146,7 @@ export function useCart(products = []) {
 
   function removeProduct(productId) {
     cartEntries.value = cartEntries.value.filter((item) => {
-      return item.productId !== Number(productId)
+      return item.productId !== String(productId)
     })
   }
 
@@ -143,7 +156,7 @@ export function useCart(products = []) {
 
   function isInCart(productId) {
     return cartEntries.value.some((item) => {
-      return item.productId === Number(productId)
+      return item.productId === String(productId)
     })
   }
 

@@ -1,0 +1,23 @@
+{
+  "name": "pixelvault-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API REST de PixelVault con Express, Mongoose y MongoDB GridFS.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "check": "node scripts/check-syntax.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.7.4",
+    "multer": "^2.0.2"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  }
+}

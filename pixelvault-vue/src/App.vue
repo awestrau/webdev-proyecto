@@ -1,21 +1,22 @@
 <script setup>
+import { onMounted } from 'vue'
+
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue'
+import { useProducts } from './composables/useProducts'
 
-/*function handleSearch(searchTerm) {
-  // Temporal hasta implementar la búsqueda de productos.
-  console.log('Buscar producto:', searchTerm)
-}*/
+const { loadProducts } = useProducts()
 
-function handleMenuToggle() {
-  // Temporal hasta implementar el menú lateral.
-  console.log('Abrir menú de navegación')
-}
+onMounted(() => {
+  loadProducts().catch(() => {
+    // Cada vista muestra el mensaje de conexión correspondiente.
+  })
+})
 </script>
 
 <template>
   <div class="min-vh-100 d-flex flex-column">
-    <AppHeader @toggle-menu="handleMenuToggle" />
+    <AppHeader />
 
     <RouterView />
 

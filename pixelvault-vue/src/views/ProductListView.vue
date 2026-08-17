@@ -2,6 +2,7 @@
 import {
     computed,
     onBeforeUnmount,
+    onMounted,
     ref,
 } from 'vue'
 
@@ -11,13 +12,22 @@ import ProductList from '../components/products/ProductList.vue'
 import { useCart } from '../composables/useCart'
 import { useFavorites } from '../composables/useFavorites'
 import { useProductFilters } from '../composables/useProductFilters'
-
-import products from '../data/products.json'
+import { useProducts } from '../composables/useProducts'
+import { productMatchesSearch } from '../utils/productSearch'
 
 const feedbackMessage = ref('')
 const feedbackType = ref('success')
 
 let feedbackTimer = null
+
+const {
+    products,
+    categories: availableCategories,
+    platforms: availablePlatforms,
+    loadingProducts,
+    productsError,
+    loadProducts,
+} = useProducts()
 
 const {
     addToCart,
@@ -32,41 +42,16 @@ const {
     searchText,
     selectedCategory,
     selectedPlatform,
+    hasActiveFilters,
+    clearFilters,
 } = useProductFilters()
 
-const availableCategories = computed(() => {
-    return [...new Set(
-        products.map((product) => product.category),
-    )].sort((first, second) => {
-        return first.localeCompare(second, 'es', {
-            sensitivity: 'base',
-        })
-    })
-})
-
-const availablePlatforms = computed(() => {
-    return [...new Set(
-        products.map((product) => product.platform),
-    )].sort((first, second) => {
-        return first.localeCompare(second, 'es', {
-            sensitivity: 'base',
-        })
-    })
-})
-
 const filteredProducts = computed(() => {
-    const normalizedSearch = normalizeText(searchText.value)
-
-    return products.filter((product) => {
-        const searchableContent = normalizeText([
-            product.name,
-            product.platform,
-            product.category,
-        ].join(' '))
-
-        const matchesSearch =
-            !normalizedSearch
-            || searchableContent.includes(normalizedSearch)
+    return products.value.filter((product) => {
+        const matchesSearch = productMatchesSearch(
+            product,
+            searchText.value,
+        )
 
         const matchesCategory =
             !selectedCategory.value
@@ -84,14 +69,6 @@ const filteredProducts = computed(() => {
     })
 })
 
-function normalizeText(value) {
-    return String(value ?? '')
-        .normalize('NFD')
-        .replace(/\p{Diacritic}/gu, '')
-        .toLocaleLowerCase('es')
-        .trim()
-}
-
 function showFeedback(message, type = 'success') {
     feedbackMessage.value = message
     feedbackType.value = type
@@ -106,8 +83,8 @@ function showFeedback(message, type = 'success') {
 }
 
 function addProductToCart(productId) {
-    const selectedProduct = products.find((product) => {
-        return Number(product.id) === Number(productId)
+    const selectedProduct = products.value.find((product) => {
+        return String(product.id) === String(productId)
     })
 
     if (!selectedProduct) {
@@ -128,8 +105,8 @@ function addProductToCart(productId) {
 }
 
 function toggleProductFavorite(productId) {
-    const selectedProduct = products.find((product) => {
-        return Number(product.id) === Number(productId)
+    const selectedProduct = products.value.find((product) => {
+        return String(product.id) === String(productId)
     })
 
     if (!selectedProduct) {
@@ -150,13 +127,26 @@ onBeforeUnmount(() => {
         window.clearTimeout(feedbackTimer)
     }
 })
+
+onMounted(() => {
+    loadProducts().catch(() => {})
+})
+
+function retryProducts() {
+    loadProducts({ force: true }).catch(() => {})
+}
 </script>
 
 <template>
     <main class="product-list-page flex-grow-1 py-4 py-md-5">
         <div class="container-fluid product-list-container">
-            <ProductFilter :categories="availableCategories" :platforms="availablePlatforms"
-                :result-count="filteredProducts.length" />
+            <ProductFilter v-if="!loadingProducts && !productsError"
+                :categories="availableCategories" :platforms="availablePlatforms"
+                :search-text="searchText" :selected-category="selectedCategory"
+                :selected-platform="selectedPlatform" :has-active-filters="hasActiveFilters"
+                :result-count="filteredProducts.length"
+                @update:selected-category="selectedCategory = $event"
+                @update:selected-platform="selectedPlatform = $event" @clear-filters="clearFilters" />
 
             <section class="products-panel nes-container is-rounded" aria-labelledby="products-title">
                 <div class="d-flex flex-wrap align-items-baseline
@@ -180,7 +170,18 @@ onBeforeUnmount(() => {
                     {{ feedbackMessage }}
                 </div>
 
-                <ProductList :products="filteredProducts" :favorite-product-ids="favoriteProductIds"
+                <div v-if="loadingProducts" class="products-state text-center py-5" role="status">
+                    Cargando productos desde la API...
+                </div>
+
+                <div v-else-if="productsError" class="alert alert-danger" role="alert">
+                    <p class="mb-3">{{ productsError }}</p>
+                    <button class="nes-btn is-primary" type="button" @click="retryProducts">
+                        Reintentar
+                    </button>
+                </div>
+
+                <ProductList v-else :products="filteredProducts" :favorite-product-ids="favoriteProductIds"
                     @add-to-cart="addProductToCart" @toggle-favorite="toggleProductFavorite" />
             </section>
         </div>
@@ -220,6 +221,11 @@ onBeforeUnmount(() => {
     border: 3px solid #111;
     box-shadow: 3px 3px 0 #111;
     padding: 0.45rem 0.65rem;
+}
+
+.products-state {
+    font-size: 0.68rem;
+    line-height: 1.8;
 }
 
 @media (min-width: 1200px) {

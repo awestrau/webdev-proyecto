@@ -20,7 +20,7 @@ const emit = defineEmits([
 
 function isFavorite(productId) {
     return props.favoriteProductIds.some((favoriteId) => {
-        return Number(favoriteId) === Number(productId)
+        return String(favoriteId) === String(productId)
     })
 }
 </script>

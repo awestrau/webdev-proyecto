@@ -1,6 +1,6 @@
 import { computed, ref } from 'vue'
 
-const MAX_SEARCH_LENGTH = 60
+import { sanitizeProductSearch } from '../utils/productSearch'
 
 const searchText = ref('')
 const selectedCategory = ref('')
@@ -13,29 +13,10 @@ const searchError = ref('')
  */
 function setSearchText(value) {
   const rawValue = String(value ?? '')
+  const sanitizedSearch = sanitizeProductSearch(rawValue)
 
-  /*
-   * Se permiten:
-   * - Letras con y sin tilde
-   * - Números
-   * - Espacios
-   * - Caracteres comunes en nombres de productos
-   */
-  const sanitizedValue = rawValue
-    .replace(/[^\p{L}\p{N}\s'’:&+.\-]/gu, '')
-    .replace(/\s{2,}/g, ' ')
-
-  if (rawValue !== sanitizedValue) {
-    searchError.value =
-      'La búsqueda contiene caracteres que no están permitidos.'
-  } else if (sanitizedValue.length > MAX_SEARCH_LENGTH) {
-    searchError.value =
-      `La búsqueda no puede superar ${MAX_SEARCH_LENGTH} caracteres.`
-  } else {
-    searchError.value = ''
-  }
-
-  searchText.value = sanitizedValue.slice(0, MAX_SEARCH_LENGTH)
+  searchError.value = sanitizedSearch.error
+  searchText.value = sanitizedSearch.value
 }
 
 function clearSearch() {

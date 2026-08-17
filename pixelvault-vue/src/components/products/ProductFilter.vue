@@ -1,7 +1,7 @@
 <script setup>
-import { useProductFilters } from '../../composables/useProductFilters'
+import { computed } from 'vue'
 
-defineProps({
+const props = defineProps({
     categories: {
         type: Array,
         default: () => [],
@@ -16,24 +16,50 @@ defineProps({
         type: Number,
         default: 0,
     },
+    selectedCategory: {
+        type: String,
+        default: '',
+    },
+    selectedPlatform: {
+        type: String,
+        default: '',
+    },
+    searchText: {
+        type: String,
+        default: '',
+    },
+    hasActiveFilters: {
+        type: Boolean,
+        default: false,
+    },
+    title: {
+        type: String,
+        default: 'Filtrar productos',
+    },
+    idPrefix: {
+        type: String,
+        default: 'product',
+    },
 })
 
-const {
-    searchText,
-    selectedCategory,
-    selectedPlatform,
-    hasActiveFilters,
-    clearFilters,
-} = useProductFilters()
+const emit = defineEmits([
+    'update:selectedCategory',
+    'update:selectedPlatform',
+    'clear-filters',
+])
+
+const titleId = computed(() => `${props.idPrefix}-filter-title`)
+const categoryId = computed(() => `${props.idPrefix}-category-filter`)
+const platformId = computed(() => `${props.idPrefix}-platform-filter`)
 </script>
 
 <template>
-    <section class="product-filter nes-container is-rounded mb-4" aria-labelledby="product-filter-title">
+    <section class="product-filter nes-container is-rounded mb-4" :aria-labelledby="titleId">
         <div class="d-flex flex-wrap align-items-center
              justify-content-between gap-3 mb-4">
             <div>
-                <h2 id="product-filter-title" class="fs-4 mb-2">
-                    Filtrar productos
+                <h2 :id="titleId" class="fs-4 mb-2">
+                    {{ title }}
                 </h2>
 
                 <p v-if="searchText" class="small mb-0">
@@ -51,12 +77,13 @@ const {
         <div class="row g-3 align-items-end">
             <!-- Categoría -->
             <div class="col-12 col-md-5">
-                <label for="product-category-filter" class="form-label">
+                <label :for="categoryId" class="form-label">
                     Categoría
                 </label>
 
                 <div class="nes-select">
-                    <select id="product-category-filter" v-model="selectedCategory">
+                    <select :id="categoryId" :value="selectedCategory"
+                        @change="emit('update:selectedCategory', $event.target.value)">
                         <option value="">
                             Todas las categorías
                         </option>
@@ -70,12 +97,13 @@ const {
 
             <!-- Plataforma -->
             <div class="col-12 col-md-5">
-                <label for="product-platform-filter" class="form-label">
+                <label :for="platformId" class="form-label">
                     Plataforma
                 </label>
 
                 <div class="nes-select">
-                    <select id="product-platform-filter" v-model="selectedPlatform">
+                    <select :id="platformId" :value="selectedPlatform"
+                        @change="emit('update:selectedPlatform', $event.target.value)">
                         <option value="">
                             Todas las plataformas
                         </option>
@@ -90,7 +118,7 @@ const {
             <!-- Limpiar -->
             <div class="col-12 col-md-2">
                 <button class="clear-filter-button nes-btn is-primary w-100" type="button"
-                    :disabled="!hasActiveFilters" @click="clearFilters">
+                    :disabled="!hasActiveFilters" @click="emit('clear-filters')">
                     Limpiar filtros
                 </button>
             </div>

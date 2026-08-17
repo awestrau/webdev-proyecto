@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import CheckoutProgress from '../components/cart/CheckoutProgress.vue'
@@ -8,7 +8,7 @@ import OrderSummary from '../components/cart/OrderSummary.vue'
 import CheckoutAddress from '../components/checkout/CheckoutAddress.vue'
 import CheckoutPayment from '../components/payment/CheckoutPayment.vue'
 
-import products from '../data/products.json'
+import { useProducts } from '../composables/useProducts'
 import promotionCodes from '../data/promotionCodes.json'
 import addressesData from '../data/addresses.json'
 import shippingOptionsData from '../data/shippingOptions.json'
@@ -24,10 +24,7 @@ const appliedCoupon = ref(null)
 const couponError = ref('')
 const selectedProduct = ref(null)
 
-/*
- * Catálogo simulado.
- * En una entrega posterior estos productos vendrán de la base de datos.
- */
+const { products, loadProducts } = useProducts()
 
 const {
   cartItems,
@@ -99,7 +96,7 @@ function roundCurrency(value) {
 function removeProduct(productId) {
   removeCartProduct(productId)
 
-  if (selectedProduct.value?.id === productId) {
+  if (String(selectedProduct.value?.id) === String(productId)) {
     selectedProduct.value = null
   }
 }
@@ -153,8 +150,8 @@ function continueToCheckout() {
 }
 
 function showProductDetails(productId) {
-    selectedProduct.value = products.find((product) => {
-        return product.id === productId
+    selectedProduct.value = products.value.find((product) => {
+        return String(product.id) === String(productId)
     }) ?? null
 }
 
@@ -169,6 +166,10 @@ watch(subtotal, (newSubtotal) => {
     if (newSubtotal === 0) {
         removeCoupon()
     }
+})
+
+onMounted(() => {
+    loadProducts().catch(() => {})
 })
 
 //Seccion checkout

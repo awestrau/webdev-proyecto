@@ -49,6 +49,13 @@ const routes = [
     },
   },
   {
+    path: '/admin-portal',
+    name: 'admin-portal',
+    component: () => {
+      return import('../views/AdminPortalView.vue')
+    },
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },

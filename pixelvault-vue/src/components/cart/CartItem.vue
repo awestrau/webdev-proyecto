@@ -16,7 +16,7 @@ const props = defineProps({
         required: true,
         validator: (product) => {
             return (
-                typeof product.id === 'number'
+                typeof product.id === 'string'
                 && typeof product.name === 'string'
                 && typeof product.price === 'number'
                 && typeof product.quantity === 'number'

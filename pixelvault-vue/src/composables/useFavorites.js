@@ -17,8 +17,8 @@ function loadFavorites() {
     }
 
     return storedFavorites
-      .map((productId) => Number(productId))
-      .filter((productId) => Number.isInteger(productId))
+      .map((productId) => String(productId ?? '').trim())
+      .filter(Boolean)
   } catch (error) {
     console.error('No se pudieron leer los favoritos:', error)
     return []
@@ -46,11 +46,15 @@ watch(
 
 export function useFavorites() {
   function isFavorite(productId) {
-    return favoriteProductIds.value.includes(Number(productId))
+    return favoriteProductIds.value.includes(String(productId))
   }
 
   function addFavorite(productId) {
-    const normalizedId = Number(productId)
+    const normalizedId = String(productId ?? '').trim()
+
+    if (!normalizedId) {
+      return
+    }
 
     if (!isFavorite(normalizedId)) {
       favoriteProductIds.value.push(normalizedId)
@@ -59,7 +63,7 @@ export function useFavorites() {
 
   function removeFavorite(productId) {
     favoriteProductIds.value = favoriteProductIds.value.filter((id) => {
-      return id !== Number(productId)
+      return id !== String(productId)
     })
   }
 

@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
+import Offcanvas from 'bootstrap/js/dist/offcanvas'
 import {
     RouterLink,
     useRouter,
@@ -10,15 +11,13 @@ import searchIcon from '../assets/icons/search.svg'
 import savedIcon from '../assets/icons/saved.svg'
 import cartIcon from '../assets/icons/cart.svg'
 import userIcon from '../assets/icons/user.svg'
+import productsIcon from '../assets/icons/products.svg'
 import logoImage from '../assets/images/logo.jpg'
 
 import { useProductFilters } from '../composables/useProductFilters'
 
 const router = useRouter()
-
-const emit = defineEmits([
-    'toggle-menu',
-])
+const sideMenuElement = ref(null)
 
 const {
     searchText,
@@ -55,6 +54,23 @@ const navigationActions = [
     },
 ]
 
+const sideNavigationItems = [
+    {
+        id: 'products',
+        label: 'Catálogo de productos',
+        ariaLabel: 'Ver todos los productos',
+        to: { name: 'products' },
+        icon: productsIcon,
+    },
+    {
+        id: 'admin',
+        label: 'Panel de Administrador',
+        ariaLabel: 'Abrir el panel de administrador',
+        to: { name: 'admin-portal' },
+        icon: userIcon,
+    },
+]
+
 const searchModel = computed({
     get() {
         return searchText.value
@@ -70,6 +86,30 @@ function submitSearch() {
         name: 'products',
     })
 }
+
+function openNavigationMenu() {
+    if (!sideMenuElement.value) {
+        return
+    }
+
+    Offcanvas.getOrCreateInstance(sideMenuElement.value).show()
+}
+
+function closeNavigationMenu() {
+    if (!sideMenuElement.value) {
+        return
+    }
+
+    Offcanvas.getInstance(sideMenuElement.value)?.hide()
+}
+
+onBeforeUnmount(() => {
+    if (!sideMenuElement.value) {
+        return
+    }
+
+    Offcanvas.getInstance(sideMenuElement.value)?.dispose()
+})
 </script>
 
 <template>
@@ -79,7 +119,8 @@ function submitSearch() {
                 <!-- Menú y marca -->
                 <div class="nav-brand-area d-flex align-items-center gap-3">
                     <button class="menu-button nes-container d-flex align-items-center justify-content-center"
-                        type="button" aria-label="Abrir menú de navegación" @click="emit('toggle-menu')">
+                        type="button" aria-label="Abrir menú de navegación" aria-controls="pixelvault-side-menu"
+                        @click="openNavigationMenu">
                         <img :src="menuIcon" alt="" class="nav-icon" aria-hidden="true">
                     </button>
 
@@ -137,6 +178,26 @@ function submitSearch() {
             </div>
         </nav>
     </header>
+
+    <aside ref="sideMenuElement" id="pixelvault-side-menu" class="offcanvas offcanvas-start pixelvault-menu"
+        tabindex="-1" aria-labelledby="pixelvault-side-menu-title">
+        <div class="offcanvas-header pixelvault-menu-header">
+            <h2 id="pixelvault-side-menu-title" class="offcanvas-title pixelvault-menu-title mb-0">
+                MENÚ
+            </h2>
+
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
+        </div>
+
+        <div class="offcanvas-body d-flex flex-column gap-3">
+            <RouterLink v-for="item in sideNavigationItems" :key="item.id" :to="item.to"
+                class="pixelvault-menu-link nes-container is-rounded d-flex align-items-center gap-3"
+                :aria-label="item.ariaLabel" @click="closeNavigationMenu">
+                <img :src="item.icon" alt="" class="pixelvault-menu-icon" aria-hidden="true">
+                <span>{{ item.label }}</span>
+            </RouterLink>
+        </div>
+    </aside>
 </template>
 
 <style scoped>
@@ -153,6 +214,45 @@ function submitSearch() {
 .nav-container {
     max-width: 1440px;
     margin-inline: auto;
+}
+
+.pixelvault-menu {
+    --bs-offcanvas-width: min(360px, 88vw);
+
+    border-right: 4px solid #111;
+    background-color: #f7f3dc;
+}
+
+.pixelvault-menu-header {
+    border-bottom: 4px solid #111;
+    background-color: var(--header-background);
+}
+
+.pixelvault-menu-title {
+    font-size: 0.9rem;
+}
+
+.pixelvault-menu-link {
+    border-color: #111;
+    background-color: #fff;
+    color: #111;
+    font-size: 0.58rem;
+    line-height: 1.6;
+    text-decoration: none;
+}
+
+.pixelvault-menu-link:hover,
+.pixelvault-menu-link:focus-visible,
+.pixelvault-menu-link.router-link-active {
+    background-color: var(--header-highlight);
+    color: #111;
+}
+
+.pixelvault-menu-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 auto;
+    image-rendering: pixelated;
 }
 
 

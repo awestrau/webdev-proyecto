@@ -3,6 +3,7 @@ import {
   computed,
   nextTick,
   onBeforeUnmount,
+  onMounted,
   ref,
   watch,
 } from 'vue'
@@ -14,10 +15,15 @@ import ProductPurchasePanel from '../components/product/ProductPurchasePanel.vue
 
 import { useCart } from '../composables/useCart'
 import { useFavorites } from '../composables/useFavorites'
-
-import products from '../data/products.json'
+import { useProducts } from '../composables/useProducts'
 
 const route = useRoute()
+const {
+  products,
+  loadingProducts,
+  productsError,
+  loadProducts,
+} = useProducts()
 
 const selectedImage = ref('')
 const toastElement = ref(null)
@@ -26,12 +32,12 @@ const toastMessage = ref('')
 let feedbackToast = null
 
 const productId = computed(() => {
-  return Number(route.params.id)
+  return String(route.params.id ?? '')
 })
 
 const product = computed(() => {
-  return products.find((item) => {
-    return Number(item.id) === productId.value
+  return products.value.find((item) => {
+    return String(item.id) === productId.value
   }) ?? null
 })
 
@@ -108,13 +114,41 @@ function handleToggleFavorite() {
 onBeforeUnmount(() => {
   feedbackToast?.dispose()
 })
+
+onMounted(() => {
+  loadProducts().catch(() => {})
+})
+
+function retryProducts() {
+  loadProducts({ force: true }).catch(() => {})
+}
 </script>
 
 <template>
   <main class="product-detail-page flex-grow-1 py-4 py-md-5">
     <div class="container-fluid product-detail-container">
+      <section
+        v-if="loadingProducts"
+        class="product-not-found nes-container is-rounded text-center"
+        role="status"
+      >
+        Cargando producto desde la API...
+      </section>
+
+      <section
+        v-else-if="productsError"
+        class="product-not-found nes-container is-rounded text-center"
+        role="alert"
+      >
+        <h1 class="mb-3">API no disponible</h1>
+        <p class="mb-4">{{ productsError }}</p>
+        <button class="nes-btn is-primary" type="button" @click="retryProducts">
+          Reintentar
+        </button>
+      </section>
+
       <!-- Producto encontrado -->
-      <template v-if="product">
+      <template v-else-if="product">
         <p class="product-breadcrumb mb-3">
           {{ product.category }} / {{ product.platform }}
         </p>

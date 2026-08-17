@@ -8,9 +8,7 @@
         "description": "Consola PlayStation 5 Slim con almacenamiento SSD, control DualSense y compatibilidad con juegos físicos y digitales.",
         "images": [
             "/images/products/ps5-slim/image-1.jpg",
-            "/images/products/ps5-slim/image-2.jpg",
-            "/images/products/ps5-slim/image-3.jpg",
-            "/images/products/ps5-slim/image-4.jpg"
+      "/images/products/ps5-slim/image-2.jpg"
         ]
     },
     {
@@ -22,9 +20,7 @@
         "description": "Consola Xbox Series X con almacenamiento SSD y compatibilidad con juegos de generaciones anteriores.",
         "images": [
             "/images/products/xbox-series-x/image-1.jpg",
-            "/images/products/xbox-series-x/image-2.jpg",
-            "/images/products/xbox-series-x/image-3.jpg",
-            "/images/products/xbox-series-x/image-4.jpg"
+      "/images/products/xbox-series-x/image-2.jpg"
         ]
     },
     {
@@ -36,9 +32,7 @@
         "description": "Nintendo Switch con pantalla OLED, almacenamiento interno de 64 GB y base con puerto LAN.",
         "images": [
             "/images/products/switch-oled/image-1.jpg",
-            "/images/products/switch-oled/image-2.jpg",
-            "/images/products/switch-oled/image-3.jpg",
-            "/images/products/switch-oled/image-4.jpg"
+      "/images/products/switch-oled/image-2.jpg"
         ]
     },
     {
@@ -50,9 +44,7 @@
         "description": "Videojuego de acción y aventura para PlayStation 5 con Peter Parker y Miles Morales.",
         "images": [
             "/images/products/spider-man-2/image-1.jpg",
-            "/images/products/spider-man-2/image-2.jpg",
-            "/images/products/spider-man-2/image-3.jpg",
-            "/images/products/spider-man-2/image-4.jpg"
+      "/images/products/spider-man-2/image-2.jpg"
         ]
     },
     {
@@ -64,9 +56,7 @@
         "description": "Explora las tierras y los cielos de Hyrule en una aventura de mundo abierto para Nintendo Switch.",
         "images": [
             "/images/products/zelda-totk/image-1.jpg",
-            "/images/products/zelda-totk/image-2.jpg",
-            "/images/products/zelda-totk/image-3.jpg",
-            "/images/products/zelda-totk/image-4.jpg"
+      "/images/products/zelda-totk/image-2.jpg"
         ]
     },
     {
@@ -78,9 +68,7 @@
         "description": "Videojuego de carreras de mundo abierto ambientado en diferentes regiones de México.",
         "images": [
             "/images/products/forza-horizon-5/image-1.jpg",
-            "/images/products/forza-horizon-5/image-2.jpg",
-            "/images/products/forza-horizon-5/image-3.jpg",
-            "/images/products/forza-horizon-5/image-4.jpg"
+      "/images/products/forza-horizon-5/image-2.jpg"
         ]
     },
     {
@@ -92,9 +80,7 @@
         "description": "Control inalámbrico con respuesta háptica, gatillos adaptativos y micrófono integrado.",
         "images": [
             "/images/products/dualsense/image-1.jpg",
-            "/images/products/dualsense/image-2.jpg",
-            "/images/products/dualsense/image-3.jpg",
-            "/images/products/dualsense/image-4.jpg"
+      "/images/products/dualsense/image-2.jpg"
         ]
     },
     {
@@ -106,9 +92,7 @@
         "description": "Control inalámbrico compatible con Xbox Series, Xbox One y computadoras.",
         "images": [
             "/images/products/xbox-controller/image-1.jpg",
-            "/images/products/xbox-controller/image-2.jpg",
-            "/images/products/xbox-controller/image-3.jpg",
-            "/images/products/xbox-controller/image-4.jpg"
+      "/images/products/xbox-controller/image-2.jpg"
         ]
     },
     {
@@ -120,9 +104,7 @@
         "description": "Control Pro inalámbrico para Nintendo Switch con controles de movimiento y vibración HD.",
         "images": [
             "/images/products/switch-pro-controller/image-1.jpg",
-            "/images/products/switch-pro-controller/image-2.jpg",
-            "/images/products/switch-pro-controller/image-3.jpg",
-            "/images/products/switch-pro-controller/image-4.jpg"
+      "/images/products/switch-pro-controller/image-2.jpg"
         ]
     },
     {
@@ -134,9 +116,7 @@
         "description": "Consola PlayStation 2 Slim reacondicionada y probada para juegos clásicos en formato físico.",
         "images": [
             "/images/products/ps2-slim/image-1.jpg",
-            "/images/products/ps2-slim/image-2.jpg",
-            "/images/products/ps2-slim/image-3.jpg",
-            "/images/products/ps2-slim/image-4.jpg"
+      "/images/products/ps2-slim/image-2.jpg"
         ]
     },
     {
@@ -148,9 +128,7 @@
         "description": "Consola Super Nintendo clásica reacondicionada para disfrutar videojuegos retro.",
         "images": [
             "/images/products/snes/image-1.jpg",
-            "/images/products/snes/image-2.jpg",
-            "/images/products/snes/image-3.jpg",
-            "/images/products/snes/image-4.jpg"
+      "/images/products/snes/image-2.jpg"
         ]
     },
     {
@@ -162,9 +140,7 @@
         "description": "Cartucho clásico de Super Mario World compatible con Super Nintendo.",
         "images": [
             "/images/products/super-mario-world/image-1.jpg",
-            "/images/products/super-mario-world/image-2.jpg",
-            "/images/products/super-mario-world/image-3.jpg",
-            "/images/products/super-mario-world/image-4.jpg"
+      "/images/products/super-mario-world/image-2.jpg"
         ]
     }
 ]
