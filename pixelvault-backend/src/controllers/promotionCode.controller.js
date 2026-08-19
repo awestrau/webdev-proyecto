@@ -29,7 +29,7 @@ async function updatePromotionCode(request, response) {
   const promotionCode = await PromotionCode.findByIdAndUpdate(
     request.params.id,
     request.body,
-    { new: true, runValidators: true },
+    { returnDocument: 'after', runValidators: true },
   )
 
   if (!promotionCode) {

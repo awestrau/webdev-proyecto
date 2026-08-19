@@ -44,8 +44,87 @@ También se incluyen modelos y CRUD básico para:
 - `/api/promotion-codes`
 - `/api/shipping-options`
 
-`addresses.json` y `paymentMethods.json` permanecen fuera del backend hasta
-definir el modelo de usuarios y sus relaciones.
+## Colecciones del modelo de datos
+
+Además de `products`, la base de datos incluye las colecciones `categories`,
+`users`, `orders` y `carts`, todas con operaciones CRUD completas.
+
+### Categorías
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/categories` | Lista las categorías activas (`?includeInactive=true` las lista todas). |
+| POST | `/api/categories` | Registra una categoría. |
+| GET | `/api/categories/:id` | Obtiene una categoría. |
+| PUT | `/api/categories/:id` | Edita una categoría. |
+| DELETE | `/api/categories/:id` | Borrado lógico: establece `status=false`. |
+
+### Usuarios
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/users` | Lista usuarios (nunca incluye la contraseña). |
+| POST | `/api/users` | Registra un usuario; la contraseña se hashea con bcryptjs. |
+| GET | `/api/users/:id` | Obtiene un usuario. |
+| PUT | `/api/users/:id` | Edita el perfil (nombre, correo, direcciones, etc.); ignora `password`. |
+| PATCH | `/api/users/:id/password` | Cambia la contraseña verificando la actual (`currentPassword` + `newPassword`). |
+| DELETE | `/api/users/:id` | Borrado lógico: establece `status=false`. |
+
+Cada usuario guarda `addresses` y `paymentMethods` como subdocumentos (misma
+forma que `addresses.json` y `paymentMethods.json` del frontend, sin el campo
+`id` porque MongoDB lo genera) y `favoriteProductIds` como referencias a
+`products`.
+
+### Órdenes
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/orders` | Lista órdenes (`?userId=<id>` filtra por usuario). |
+| POST | `/api/orders` | Registra una orden; si faltan `subtotal`/`total`, se calculan desde los items. |
+| GET | `/api/orders/:id` | Obtiene una orden. |
+| PUT | `/api/orders/:id` | Actualiza `status` y los montos. |
+| DELETE | `/api/orders/:id` | Borrado lógico: establece `status='cancelled'`. |
+
+Los items guardan un snapshot del producto (`name`, `price`, `quantity`,
+`platform`, `image`) con una referencia opcional a `products`, de modo que la
+orden conserva su historia aunque el catálogo cambie.
+
+### Carritos
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| GET | `/api/carts` | Lista los carritos. |
+| GET | `/api/carts/by-user/:userId` | Obtiene el carrito de un usuario. |
+| POST | `/api/carts` | Upsert por usuario: crea el carrito (201) o fusiona items al existente (200). |
+| PUT | `/api/carts/:id` | Reemplaza el contenido completo del carrito. |
+| DELETE | `/api/carts/:id` | Borrado físico del carrito. |
+| DELETE | `/api/carts/by-user/:userId` | Vacía el carrito del usuario conservando el documento. |
+
+Hay un solo carrito por usuario (`user` es único); al agregar un producto que
+ya estaba en el carrito se suman las cantidades.
+
+## Datos de ejemplo (seed)
+
+Para poblar categorías, usuarios, órdenes y carritos de ejemplo, ejecuta:
+
+```bash
+npm run seed
+```
+
+El script solo inserta cuando la colección está vacía (es idempotente) e
+imprime un resumen con la cantidad de documentos insertados por colección.
+Los usuarios de ejemplo usan la contraseña `Clave12345`:
+
+- `usuario@example.com` (Andrés Westra Ureña, admin) — recibe 2 órdenes y un
+  carrito de ejemplo.
+- `jimena.montero@example.com` (Jimena Montero Segura, customer).
+- `esteban.delgado@example.com` (Esteban Jesús Delgado González, customer).
+
+Las órdenes referencian productos si la colección `products` ya tiene datos;
+si no, se crean con snapshots sin referencia para que el seed nunca falle.
+
+`addresses.json` y `paymentMethods.json` ya no quedan fuera del backend: ahora
+viven como subdocumentos del modelo `User` (colección `users`).
 
 ## Decisiones importantes
 

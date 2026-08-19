@@ -29,7 +29,7 @@ async function updateShippingOption(request, response) {
   const shippingOption = await ShippingOption.findByIdAndUpdate(
     request.params.id,
     request.body,
-    { new: true, runValidators: true },
+    { returnDocument: 'after', runValidators: true },
   )
 
   if (!shippingOption) {

@@ -8,6 +8,10 @@ const {
 const productRoutes = require('./routes/product.routes')
 const promotionCodeRoutes = require('./routes/promotionCode.routes')
 const shippingOptionRoutes = require('./routes/shippingOption.routes')
+const categoryRoutes = require('./routes/category.routes')
+const userRoutes = require('./routes/user.routes')
+const orderRoutes = require('./routes/order.routes')
+const cartRoutes = require('./routes/cart.routes')
 
 function getAllowedOrigins() {
   return String(
@@ -54,6 +58,10 @@ app.get('/api/health', (request, response) => {
 app.use('/api/products', productRoutes)
 app.use('/api/promotion-codes', promotionCodeRoutes)
 app.use('/api/shipping-options', shippingOptionRoutes)
+app.use('/api/categories', categoryRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/orders', orderRoutes)
+app.use('/api/carts', cartRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

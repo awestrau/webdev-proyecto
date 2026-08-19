@@ -191,11 +191,19 @@ async function updateProduct(request, response) {
 }
 
 async function updateProductStatus(request, response) {
-  const status = parseBoolean(request.body.status)
+  const body = request.body ?? {}
+
+  if (body.status === undefined) {
+    return response.status(400).json({
+      message: 'Debes indicar el estado del producto (true o false).',
+    })
+  }
+
+  const status = parseBoolean(body.status)
   const product = await Product.findByIdAndUpdate(
     request.params.id,
     { status },
-    { new: true, runValidators: true },
+    { returnDocument: 'after', runValidators: true },
   )
 
   if (!product) {
@@ -213,8 +221,22 @@ async function updateProductStatus(request, response) {
 }
 
 async function deactivateProduct(request, response) {
-  request.body.status = false
-  return updateProductStatus(request, response)
+  const product = await Product.findByIdAndUpdate(
+    request.params.id,
+    { status: false },
+    { returnDocument: 'after', runValidators: true },
+  )
+
+  if (!product) {
+    return response.status(404).json({
+      message: 'No se encontró el producto solicitado.',
+    })
+  }
+
+  return response.json({
+    message: 'Producto desactivado correctamente.',
+    product: presentProduct(product, request),
+  })
 }
 
 async function streamProductImage(request, response, next) {

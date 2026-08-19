@@ -28,6 +28,12 @@ function errorHandler(error, request, response, next) {
     })
   }
 
+  if (error.name === 'CastError') {
+    return response.status(400).json({
+      message: 'El identificador enviado no es válido.',
+    })
+  }
+
   if (error.code === 11000) {
     return response.status(409).json({
       message: 'Ya existe un registro con esos datos únicos.',
