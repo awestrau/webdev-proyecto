@@ -187,6 +187,20 @@ async function getOrderInvoice(request, response) {
     })
   }
 
+  // IDOR fix: la factura expone PII (titular de tarjeta, dirección,
+  // teléfono, brand + last4). Solo el dueño de la orden o un admin pueden
+  // descargarla. Las órdenes sin `user` (precargadas) solo son accesibles
+  // para admins.
+  const isAdmin = request.user.role === 'admin'
+  const isOwner = Boolean(order.user)
+    && String(order.user) === String(request.user.id)
+
+  if (!isAdmin && !isOwner) {
+    return response.status(403).json({
+      message: 'No autorizado.',
+    })
+  }
+
   const buffer = await generateInvoicePDF(order)
   const invoiceNumber = safeFilenameSegment(resolveInvoiceNumber(order))
     || safeFilenameSegment(order && (order._id || order.id))
