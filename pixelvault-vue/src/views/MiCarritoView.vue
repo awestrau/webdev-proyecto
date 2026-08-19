@@ -244,6 +244,13 @@ function continueToPayment() {
 //SECCION PAGO
 const selectedPaymentMethodId = ref(null)
 const orderError = ref('')
+/*
+ * Orden recién registrada (respuesta cruda de createOrder más el
+ * orderNumber generado en CheckoutPayment): alimenta la descarga
+ * on-demand del comprobante y el estado del botón "Descargar comprobante".
+ */
+const completedOrderData = ref(null)
+const isDownloadingInvoice = ref(false)
 //Funciones
 const selectedPaymentMethod = computed(() => {
     return paymentMethods.value.find((paymentMethod) => {
@@ -345,25 +352,65 @@ async function handleOrderCompleted(completedOrder) {
         const order = await createOrder(orderPayload)
 
         /*
-         * El backend serializa la orden cruda de Mongoose: el
-         * identificador llega como `_id` (no como `id`, ya que no hay
-         * presenter de órdenes). Se usa `_id` con fallback defensivo.
+         * Se guarda la orden (respuesta cruda de Mongoose: `_id`, no `id`)
+         * junto con el orderNumber del modal para la descarga on-demand del
+         * comprobante. La factura NO se descarga aquí: el usuario la pide
+         * explícitamente desde el modal de éxito.
          */
-        await downloadOrderInvoice(
-            order._id ?? order.id,
-            `factura-${completedOrder.orderNumber}.pdf`,
-        )
+        completedOrderData.value = {
+            ...order,
+            orderNumber: completedOrder.orderNumber,
+        }
+
+        clearCart()
+        removeCoupon()
     } catch (error) {
         /*
-         * Si la orden o la factura fallan, se informa al usuario y se
-         * conserva el carrito y el estado del checkout para reintentar.
+         * Si la orden no se registra, se informa al usuario y se conserva
+         * el carrito para reintentar. El error se muestra dentro del modal
+         * de éxito (prop `order-error` de CheckoutPayment) con un botón de
+         * reintento, ya que el backdrop del modal tapa el banner de la vista.
          */
         orderError.value = getOrderErrorMessage(error)
+    }
+}
+
+/*
+ * Descarga on-demand del comprobante: solo se ejecuta cuando el usuario
+ * hace clic en "Descargar comprobante" desde el modal de éxito. No navega
+ * ni cierra el modal; si falla, el error se muestra dentro del modal y el
+ * usuario puede reintentar o volver al inicio.
+ */
+async function handleDownloadInvoice() {
+    const completedOrder = completedOrderData.value
+
+    if (!completedOrder) {
         return
     }
 
-    clearCart()
-    removeCoupon()
+    orderError.value = ''
+    isDownloadingInvoice.value = true
+
+    try {
+        await downloadOrderInvoice(
+            completedOrder._id ?? completedOrder.id,
+            `factura-${completedOrder.orderNumber}.pdf`,
+        )
+    } catch (error) {
+        orderError.value = getOrderErrorMessage(error)
+    } finally {
+        isDownloadingInvoice.value = false
+    }
+}
+
+/*
+ * El usuario decidió volver al inicio desde el modal de éxito: se libera
+ * el estado del checkout (la orden ya quedó registrada y el carrito ya se
+ * vació en handleOrderCompleted).
+ */
+function handleGoHome() {
+    completedOrderData.value = null
+    orderError.value = ''
 
     selectedPaymentMethodId.value = null
     selectedAddressId.value = null
@@ -485,9 +532,11 @@ async function handleOrderCompleted(completedOrder) {
             <CheckoutPayment v-else-if="currentStep === 'payment'" :payment-methods="paymentMethods"
                 :selected-payment-method-id="selectedPaymentMethodId" :product-count="totalProductUnits"
                 :products-total="orderTotal" :shipping-cost="shippingCost" :order-total="checkoutTotal"
-                :shipping-label="selectedShipping?.label ?? ''" @select-payment-method="selectPaymentMethod"
-                @add-payment-method="addPaymentMethod" @back-checkout="currentStep = 'checkout'"
-                @order-completed="handleOrderCompleted" />
+                :shipping-label="selectedShipping?.label ?? ''" :order-ready="Boolean(completedOrderData)"
+                :order-error="orderError" :downloading="isDownloadingInvoice"
+                @select-payment-method="selectPaymentMethod" @add-payment-method="addPaymentMethod"
+                @back-checkout="currentStep = 'checkout'" @order-completed="handleOrderCompleted"
+                @download-invoice="handleDownloadInvoice" @go-home="handleGoHome" />
         </div>
     </main>
 </template>

@@ -33,6 +33,25 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    /*
+     * Estado de la orden informado por MiCarritoView:
+     * - `orderReady`: la orden ya quedó registrada (habilita la descarga).
+     * - `orderError`: mensaje de error para mostrar DENTRO del modal (el
+     *   banner del padre queda tapado por el backdrop del modal).
+     * - `downloading`: hay una descarga de comprobante en curso.
+     */
+    orderReady: {
+        type: Boolean,
+        default: false,
+    },
+    orderError: {
+        type: String,
+        default: '',
+    },
+    downloading: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const emit = defineEmits([
@@ -40,12 +59,15 @@ const emit = defineEmits([
     'add-payment-method',
     'back-checkout',
     'order-completed',
+    'download-invoice',
+    'go-home',
 ])
 
 const paymentStatusModalElement = ref(null)
 const paymentStatus = ref('idle')
 const paymentError = ref('')
 const orderNumber = ref('')
+const completedOrder = ref(null)
 
 let paymentStatusModal = null
 let processingTimer = null
@@ -89,33 +111,45 @@ function completeOrder() {
 
     paymentStatusModal.show()
 
+    /*
+     * La orden se emite en cuanto el modal pasa a "success", no cuando el
+     * usuario hace clic en un botón: así MiCarritoView registra la orden de
+     * inmediato aunque el usuario cierre la pestaña justo después de pagar.
+     */
     processingTimer = window.setTimeout(() => {
         orderNumber.value = generateOrderNumber()
         paymentStatus.value = 'success'
+        completedOrder.value = {
+            orderNumber: orderNumber.value,
+            paymentMethodId: selectedPaymentMethod.value?.id,
+        }
+        emit('order-completed', completedOrder.value)
     }, 5000)
 }
-function finishOrder() {
-    const completedOrder = {
-        orderNumber: orderNumber.value,
-        paymentMethodId: selectedPaymentMethod.value?.id,
-    }
+/*
+ * La orden ya fue emitida al mostrar el modal de éxito: estos botones solo
+ * informan al padre de la decisión del usuario (descargar el comprobante o
+ * volver al inicio); la descarga y la navegación las ejecuta MiCarritoView.
+ */
+function downloadInvoice() {
+    emit('download-invoice')
+}
 
-    const modalElement = paymentStatusModalElement.value
+function goHome() {
+    emit('go-home')
+}
 
-    if (!modalElement || !paymentStatusModal) {
-        emit('order-completed', completedOrder)
+/*
+ * Solo se ofrece cuando el registro de la orden falló (orderReady false):
+ * re-emite la misma orden para que MiCarritoView reintente crearla.
+ */
+function retryOrder() {
+    if (!completedOrder.value) {
         return
     }
 
-    modalElement.addEventListener('hidden.bs.modal', () => {
-        emit('order-completed', completedOrder)
-    },
-        {
-            once: true
-        },
-    )
-    paymentStatusModal.hide()
-} 
+    emit('order-completed', completedOrder.value)
+}
 
 onBeforeUnmount(() => {
     if (processingTimer) {
@@ -182,9 +216,24 @@ onBeforeUnmount(() => {
                             <h2 id="payment-status-title" class="payment-status-title mb-3"> ¡Gracias por tu compra! </h2>
                             <p class="small mb-2"> La orden se completó correctamente. </p>
                             <p class="payment-status-order mb-4"> Número de orden: <strong>{{ orderNumber }}</strong> </p>
-                            <button class="return-home-button nes-btn is-primary" type="button" @click="finishOrder">
-                                Volver al inicio
-                            </button>
+                            <div v-if="orderError" class="payment-status-error mb-3" role="alert" aria-live="polite">
+                                <p class="small mb-2">
+                                    {{ orderError }}
+                                </p>
+                                <button v-if="!orderReady" class="retry-order-button nes-btn is-warning" type="button"
+                                    @click="retryOrder">
+                                    Reintentar
+                                </button>
+                            </div>
+                            <div class="payment-status-actions d-flex flex-column gap-2">
+                                <button class="download-invoice-button nes-btn is-primary" type="button"
+                                    :disabled="!orderReady || downloading" @click="downloadInvoice">
+                                    {{ downloading ? 'Descargando…' : 'Descargar comprobante' }}
+                                </button>
+                                <button class="return-home-button nes-btn is-success" type="button" @click="goHome">
+                                    Volver al inicio
+                                </button>
+                            </div>
                         </template>
                     </div>
                 </div>
@@ -321,6 +370,45 @@ onBeforeUnmount(() => {
 .return-home-button:focus-visible {
     outline: 3px solid #111;
     outline-offset: 3px;
+}
+
+.payment-status-actions {
+    margin-top: 1.25rem;
+}
+
+.download-invoice-button,
+.retry-order-button {
+    margin: 0;
+    padding: 0.9rem 1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.6rem;
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+
+.download-invoice-button:focus-visible,
+.retry-order-button:focus-visible {
+    outline: 3px solid #111;
+    outline-offset: 3px;
+}
+
+.payment-status-modal .nes-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.payment-status-error {
+    padding: 0.75rem 1rem;
+    border: 3px solid #111;
+    background-color: #fff;
+    box-shadow: 4px 4px 0 #111;
+    color: #ce372b;
+    text-align: left;
+}
+
+.payment-status-error .small {
+    line-height: 1.6;
+    overflow-wrap: anywhere;
 }
 
 .payment-status-modal {
