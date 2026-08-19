@@ -108,12 +108,58 @@ const promotionSnapshotSchema = new mongoose.Schema(
   },
 )
 
+const shippingAddressSchema = new mongoose.Schema(
+  {
+    label: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    country: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    addressLine: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    state: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    zipCode: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+  },
+  {
+    _id: false,
+  },
+)
+
 const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'La orden debe pertenecer a un usuario.'],
+    },
+    invoiceNumber: {
+      type: String,
+      trim: true,
     },
     items: {
       type: [orderItemSchema],
@@ -126,6 +172,9 @@ const orderSchema = new mongoose.Schema(
     shipping: {
       type: shippingSnapshotSchema,
       required: [true, 'Los datos de envío son obligatorios.'],
+    },
+    shippingAddress: {
+      type: shippingAddressSchema,
     },
     payment: {
       type: paymentSnapshotSchema,

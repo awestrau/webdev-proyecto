@@ -1,2 +1,5 @@
 # Playwright MCP artifacts (verificaciones de subagentes)
 .playwright-mcp/
+
+# Variables de entorno (secretos: API keys, credenciales, etc.)
+.env

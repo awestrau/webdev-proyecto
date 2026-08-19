@@ -1,4 +1,7 @@
-require('dotenv').config()
+const path = require('node:path')
+
+// Las variables de entorno viven en el .env de la raíz del repo.
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') })
 
 const mongoose = require('mongoose')
 
