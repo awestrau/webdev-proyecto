@@ -12,7 +12,7 @@ servicios y middleware para que cada archivo tenga una responsabilidad clara.
 
 ## Configuración
 
-El servidor (`src/server.js`) y el seed (`scripts/seed.js`) leen las variables
+El servidor (`src/server.js`) lee las variables
 de entorno desde un único archivo `.env` ubicado en la **raíz del repositorio**
 (junto a `README.md`), resuelto como `../../.env` desde sus carpetas.
 
@@ -67,8 +67,8 @@ Authorization: Bearer <token>
 
 Se trata de una **credencial de verificación académica** (mock) para que el
 docente pueda revisar el panel de administración del frontend. La base de datos
-entregada ya viene cargada con este usuario (rol `admin`); no es necesario
-ejecutar `npm run seed`. No corresponde a un usuario de producción.
+entregada ya viene cargada con este usuario (rol `admin`). No corresponde a un
+usuario de producción.
 
 El registro público (`POST /api/users`) siempre crea usuarios con rol
 `customer` (se ignora cualquier rol enviado en el body). `POST /api/users/admin`
@@ -80,7 +80,6 @@ solo puede invocarlo un usuario admin y crea otros administradores.
 | --- | --- |
 | `npm run dev` | Inicia el servidor con recarga automática (`node --watch`). |
 | `npm start` | Inicia el servidor sin recarga. |
-| `npm run seed` | Puebla una base vacía con datos de ejemplo (solo desarrollo). |
 | `npm run check` | Verifica la sintaxis de todos los archivos JavaScript. |
 
 ## Endpoints de productos
@@ -186,38 +185,6 @@ el envío se valida contra la colección `shippingOptions`.
 
 Hay un solo carrito por usuario (`user` es único); al agregar un producto que
 ya estaba en el carrito se suman las cantidades.
-
-## Datos de ejemplo (seed)
-
-> **La base de datos entregada ya viene cargada** (categorías, productos,
-> usuarios, órdenes y carritos). **No es necesario ejecutar `npm run seed`**.
-
-El seed es una **herramienta de desarrollo** para poblar una base vacía desde
-cero. Para ejecutarlo:
-
-```bash
-npm run seed
-```
-
-El script solo inserta cuando la colección está vacía (es idempotente) e
-imprime un resumen con la cantidad de documentos insertados por colección.
-Además, **crea el administrador de verificación** `admin@pixelvault.com` /
-`admin1234` (rol `admin`) solo si no existe: si ya está registrado, actualiza
-nombre, rol y estado sin tocar su contraseña. En la base entregada, este
-administrador ya está presente.
-
-Los usuarios de ejemplo usan la contraseña `Clave12345`:
-
-- `usuario@example.com` (Andrés Westra Ureña, admin) — recibe 2 órdenes y un
-  carrito de ejemplo.
-- `jimena.montero@example.com` (Jimena Montero Segura, customer).
-- `esteban.delgado@example.com` (Esteban Jesús Delgado González, customer).
-
-Las órdenes referencian productos si la colección `products` ya tiene datos;
-si no, se crean con snapshots sin referencia para que el seed nunca falle.
-
-`addresses.json` y `paymentMethods.json` ya no quedan fuera del backend: ahora
-viven como subdocumentos del modelo `User` (colección `users`).
 
 ## Decisiones importantes
 

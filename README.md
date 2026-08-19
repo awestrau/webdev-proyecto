@@ -85,10 +85,9 @@ cd webdev-proyecto
 **a) Verificar el archivo `.env`**
 
 El backend lee sus variables de entorno desde un único archivo `.env` en la
-**raíz del repositorio** (tanto `npm run dev` como `npm run seed` lo cargan
-desde allí). El repositorio se entrega con este archivo **ya configurado**
-(`MONGO_URI` de MongoDB Atlas y `JWT_SECRET`), por lo que no es necesario
-crear nada.
+**raíz del repositorio**. El repositorio se entrega con este archivo **ya
+configurado** (`MONGO_URI` de MongoDB Atlas y `JWT_SECRET`), por lo que no es
+necesario crear nada.
 
 > Si el archivo `.env` faltara (por ejemplo, al clonar el repositorio desde
 > cero), recrealo copiando la plantilla:
@@ -120,9 +119,7 @@ npm run dev
 La API queda disponible en <http://localhost:3000>.
 
 > **Nota:** la base de datos se entrega **ya construida y cargada** (categorías,
-> productos, usuarios — incluido el administrador —, órdenes y carritos). No es
-> necesario ejecutar `npm run seed`; este comando solo sirve para poblar una
-> base desde cero en desarrollo.
+> productos, usuarios — incluido el administrador —, órdenes y carritos).
 
 ### 2. Frontend (`pixelvault-vue/`)
 

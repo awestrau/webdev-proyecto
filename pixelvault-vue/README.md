@@ -99,9 +99,8 @@ Credenciales de verificación (académicas, mock):
 | Contraseña | `admin1234` |
 
 > **Nota:** la base de datos entregada ya viene cargada con este usuario (rol
-> `admin`); no es necesario ejecutar el seed del backend. Es una credencial
-> para que el docente pueda verificar el panel; no corresponde a un usuario de
-> producción.
+> `admin`). Es una credencial para que el docente pueda verificar el panel; no
+> corresponde a un usuario de producción.
 
 Desde el panel se gestionan **Productos, Usuarios, Categorías y Órdenes**
 (registro, edición y activación/desactivación de productos, gestión de
