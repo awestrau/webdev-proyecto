@@ -1,7 +1,22 @@
 <script setup>
-import { ref, computed } from 'vue'
+import {
+  computed,
+  onMounted,
+  ref,
+} from 'vue'
+import {
+  useRoute,
+  useRouter,
+} from 'vue-router'
+
+import { useAuth } from '../composables/useAuth'
 
 import '../assets/forms.css'
+
+const route = useRoute()
+const router = useRouter()
+
+const { login } = useAuth()
 
 // --- Estado del formulario ---
 const correo = ref('')
@@ -10,6 +25,10 @@ const recordar = ref(false)
 
 const correoTouched = ref(false)
 const passwordTouched = ref(false)
+
+const loading = ref(false)
+const errorMessage = ref('')
+const successMessage = ref('')
 
 // --- Reglas de validación ---
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -35,7 +54,7 @@ const isFormValid = computed(() => {
 })
 
 // --- Handlers ---
-function handleSubmit() {
+async function handleSubmit() {
   // Al enviar marcamos todos los campos como touched para mostrar errores.
   correoTouched.value = true
   passwordTouched.value = true
@@ -44,12 +63,43 @@ function handleSubmit() {
     return
   }
 
-  console.log('Login enviado:', {
-    correo: correo.value.trim(),
-    password: password.value,
-    recordar: recordar.value,
-  })
+  errorMessage.value = ''
+  loading.value = true
+
+  try {
+    const user = await login(
+      correo.value.trim(),
+      password.value,
+      { persist: recordar.value },
+    )
+
+    // Si vino de una página protegida (query redirect), respetamos el destino.
+    const redirect = route.query.redirect
+
+    const target = (
+      typeof redirect === 'string'
+      && redirect.startsWith('/')
+      && redirect !== '/login'
+    )
+      ? redirect
+      : (user.role === 'admin' ? '/admin-portal' : '/')
+
+    router.replace(target)
+  } catch (error) {
+    errorMessage.value = error instanceof Error
+      ? error.message
+      : 'No fue posible iniciar sesión.'
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(() => {
+  if (route.query.registrado) {
+    successMessage.value =
+      'Tu cuenta fue creada correctamente. Ya podés iniciar sesión.'
+  }
+})
 </script>
 
 <template>
@@ -60,6 +110,14 @@ function handleSubmit() {
           <h2>Iniciar Sesión</h2>
 
           <p>Ingresá a tu cuenta para continuar</p>
+        </div>
+
+        <div v-if="successMessage" class="form-alert form-alert--success" role="status" aria-live="polite">
+          {{ successMessage }}
+        </div>
+
+        <div v-if="errorMessage" class="form-alert form-alert--danger" role="alert" aria-live="assertive">
+          {{ errorMessage }}
         </div>
 
         <form novalidate @submit.prevent="handleSubmit">
@@ -102,8 +160,8 @@ function handleSubmit() {
             <label for="login-recordar" class="form-check-label">Recordarme</label>
           </div>
 
-          <button type="submit" class="form-submit">
-            Ingresar
+          <button type="submit" class="form-submit" :disabled="loading">
+            {{ loading ? 'Ingresando...' : 'Ingresar' }}
           </button>
         </form>
 

@@ -1,5 +1,8 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { registerUser } from '../services/api'
 
 import '../assets/forms.css'
 
@@ -7,7 +10,6 @@ import '../assets/forms.css'
 const nombre = ref('')
 const apellido = ref('')
 const correo = ref('')
-const usuario = ref('')
 const password = ref('')
 const confirmar = ref('')
 const terminos = ref(false)
@@ -15,7 +17,6 @@ const terminos = ref(false)
 const nombreTouched = ref(false)
 const apellidoTouched = ref(false)
 const correoTouched = ref(false)
-const usuarioTouched = ref(false)
 const passwordTouched = ref(false)
 const confirmarTouched = ref(false)
 const terminosTouched = ref(false)
@@ -23,7 +24,6 @@ const terminosTouched = ref(false)
 // --- Reglas de validación ---
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const lettersAndSpacesRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/
-const usernameRegex = /^[a-zA-Z0-9_]+$/
 
 const nombreError = computed(() => {
   if (!nombreTouched.value) return ''
@@ -45,14 +45,6 @@ const correoError = computed(() => {
   if (!correoTouched.value) return ''
   if (!correo.value.trim()) return 'El correo electrónico es obligatorio.'
   if (!emailRegex.test(correo.value.trim())) return 'Ingresá un correo electrónico válido.'
-  return ''
-})
-
-const usuarioError = computed(() => {
-  if (!usuarioTouched.value) return ''
-  if (!usuario.value.trim()) return 'El nombre de usuario es obligatorio.'
-  if (usuario.value.trim().length < 3) return 'El usuario debe tener al menos 3 caracteres.'
-  if (!usernameRegex.test(usuario.value.trim())) return 'El usuario solo puede contener letras, números y guiones bajos.'
   return ''
 })
 
@@ -80,7 +72,6 @@ const terminosError = computed(() => {
 const isNombreValid = computed(() => nombreTouched.value && !nombreError.value)
 const isApellidoValid = computed(() => apellidoTouched.value && !apellidoError.value)
 const isCorreoValid = computed(() => correoTouched.value && !correoError.value)
-const isUsuarioValid = computed(() => usuarioTouched.value && !usuarioError.value)
 const isPasswordValid = computed(() => passwordTouched.value && !passwordError.value)
 const isConfirmarValid = computed(() => confirmarTouched.value && !confirmarError.value)
 const isTerminosValid = computed(() => terminosTouched.value && !terminosError.value)
@@ -92,8 +83,6 @@ const isFormValid = computed(() => {
     apellido.value.trim().length >= 2 &&
     lettersAndSpacesRegex.test(apellido.value.trim()) &&
     emailRegex.test(correo.value.trim()) &&
-    usuario.value.trim().length >= 3 &&
-    usernameRegex.test(usuario.value.trim()) &&
     password.value.length >= 8 &&
     confirmar.value === password.value &&
     terminos.value
@@ -101,12 +90,16 @@ const isFormValid = computed(() => {
 })
 
 // --- Handlers ---
-function handleSubmit() {
+const router = useRouter()
+
+const submitting = ref(false)
+const errorMessage = ref('')
+
+async function handleSubmit() {
   // Al enviar marcamos todos los campos como touched para mostrar errores.
   nombreTouched.value = true
   apellidoTouched.value = true
   correoTouched.value = true
-  usuarioTouched.value = true
   passwordTouched.value = true
   confirmarTouched.value = true
   terminosTouched.value = true
@@ -115,14 +108,29 @@ function handleSubmit() {
     return
   }
 
-  console.log('Registro enviado:', {
-    nombre: nombre.value.trim(),
-    apellido: apellido.value.trim(),
-    correo: correo.value.trim(),
-    usuario: usuario.value.trim(),
-    password: password.value,
-    terminos: terminos.value,
-  })
+  errorMessage.value = ''
+  submitting.value = true
+
+  try {
+    await registerUser({
+      name: `${nombre.value.trim()} ${apellido.value.trim()}`,
+      email: correo.value.trim(),
+      password: password.value,
+    })
+
+    // El registro siempre crea una cuenta con rol customer; redirigimos al
+    // login con una marca para mostrar un mensaje de éxito.
+    router.replace({
+      path: '/login',
+      query: { registrado: '1' },
+    })
+  } catch (error) {
+    errorMessage.value = error instanceof Error
+      ? error.message
+      : 'No fue posible crear tu cuenta.'
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 
@@ -134,6 +142,10 @@ function handleSubmit() {
           <h2>Crear Cuenta</h2>
 
           <p>Unite a la comunidad retro de PixelVault</p>
+        </div>
+
+        <div v-if="errorMessage" class="form-alert form-alert--danger" role="alert" aria-live="assertive">
+          {{ errorMessage }}
         </div>
 
         <form novalidate @submit.prevent="handleSubmit">
@@ -187,22 +199,6 @@ function handleSubmit() {
             </p>
           </div>
 
-          <div class="form-field">
-            <label for="registro-usuario" class="form-label">Nombre de usuario</label>
-
-            <input id="registro-usuario" v-model="usuario" type="text"
-              class="form-control form-input"
-              :class="{ 'is-invalid': usuarioError, 'is-valid': isUsuarioValid }"
-              placeholder="Elegí un nombre de usuario" autocomplete="username" aria-required="true"
-              :aria-invalid="!!usuarioError"
-              :aria-describedby="usuarioError ? 'registro-usuario-error' : undefined"
-              @blur="usuarioTouched = true">
-
-            <p v-if="usuarioError" id="registro-usuario-error" class="form-error" role="alert">
-              {{ usuarioError }}
-            </p>
-          </div>
-
           <div class="form-row">
             <div class="form-field">
               <label for="registro-password" class="form-label">Contraseña</label>
@@ -252,8 +248,8 @@ function handleSubmit() {
             {{ terminosError }}
           </p>
 
-          <button type="submit" class="form-submit">
-            Crear Cuenta
+          <button type="submit" class="form-submit" :disabled="submitting">
+            {{ submitting ? 'Creando cuenta...' : 'Crear Cuenta' }}
           </button>
         </form>
 

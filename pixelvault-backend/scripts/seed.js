@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
-require('dotenv').config()
+// El .env con MONGO_URI/JWT_SECRET vive en la RAÍZ del repo (/admin/.env);
+// desde scripts/ se resuelve con ../../.env (no depende del cwd).
+require('dotenv').config({
+  path: require('path').resolve(__dirname, '../../.env'),
+})
 
 const connectDB = require('../src/config/db')
 const mongoose = require('mongoose')
@@ -229,6 +233,32 @@ async function seedUsers() {
   return created.length
 }
 
+const ADMIN_EMAIL = 'admin@pixelvault.com'
+const ADMIN_PASSWORD = 'admin1234'
+
+async function ensureAdmin() {
+  const existing = await User.findOne({ email: ADMIN_EMAIL })
+
+  if (existing) {
+    await User.updateOne(
+      { _id: existing._id },
+      { $set: { name: 'Administrador PixelVault', role: 'admin', status: true } },
+    )
+    console.log('  - admin: ya existía, se actualizó nombre/rol (contraseña intacta).')
+    return 0
+  }
+
+  // User.create dispara el pre('save') que hashea la contraseña con bcrypt.
+  await User.create({
+    name: 'Administrador PixelVault',
+    email: ADMIN_EMAIL,
+    password: ADMIN_PASSWORD,
+    role: 'admin',
+  })
+  console.log('  - admin: administrador creado (admin@pixelvault.com).')
+  return 1
+}
+
 async function seed() {
   await connectDB()
 
@@ -239,6 +269,9 @@ async function seed() {
 
   console.log('\nSembrando usuarios...')
   summary.users = await seedUsers()
+
+  console.log('\nGarantizando administrador...')
+  summary.admin = await ensureAdmin()
 
   console.log('\nSembrando productos...')
   summary.products = await seedCollection('products', Product, productsSeed)

@@ -1,14 +1,20 @@
 const mongoose = require('mongoose')
 
 const Order = require('../models/Order.model')
+const Product = require('../models/Product.model')
+const ShippingOption = require('../models/ShippingOption.model')
 
+const ORDER_STATUSES = ['pending', 'paid', 'shipped', 'delivered', 'cancelled']
+
+// 'status' NO está en el whitelist a propósito: el cliente no debe poder
+// forzar el estado de una orden al crearla (siempre queda 'pending' por
+// defecto). PUT /:id (admin-only) sigue permitiendo cambiarlo vía su lógica.
+// 'user' tampoco: el dueño de la orden siempre se toma del token.
 const orderFields = new Set([
-  'user',
   'items',
   'shipping',
   'payment',
   'promotionCode',
-  'status',
 ])
 
 function bodyOf(request) {
@@ -31,13 +37,75 @@ function sanitizeOrderBody(body) {
   return payload
 }
 
-function computeTotals(body, items) {
+// computeTotals recibe el payload SANEADO (no el body crudo) y los ítems
+// ya resueltos contra la BD (precio real del producto).
+function computeTotals(payload, items) {
   const subtotal = items.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0)
-  const shippingCost = Number(body.shipping?.cost ?? 0)
+  const shippingCost = Number(payload.shipping?.cost ?? 0)
   const discount = 0
   const total = subtotal + shippingCost - discount
 
   return { discount, shippingCost, subtotal, total }
+}
+
+async function resolveOrderItems(rawItems) {
+  const resolvedItems = []
+
+  for (const item of rawItems) {
+    const productId = item?.product
+
+    if (!mongoose.isObjectIdOrHexString(productId)) {
+      const error = new Error(
+        'Cada ítem de la orden debe referenciar un producto válido.',
+      )
+      error.statusCode = 400
+      throw error
+    }
+
+    const product = await Product.findById(productId)
+
+    if (!product) {
+      const error = new Error('Uno de los productos no existe en el catálogo.')
+      error.statusCode = 400
+      throw error
+    }
+
+    // Se toman nombre, precio y plataforma del catálogo; los datos que
+    // envíe el cliente para estos campos se ignoran (snapshot confiable).
+    resolvedItems.push({
+      product: product._id,
+      name: product.name,
+      price: product.price,
+      quantity: Number(item.quantity) >= 1 ? Math.trunc(Number(item.quantity)) : 1,
+      platform: product.platform,
+    })
+  }
+
+  return resolvedItems
+}
+
+async function resolveShipping(payload) {
+  const requestedCost = Number(payload.shipping?.cost)
+
+  // Se busca la opción real por costo (y por label cuando el cliente la envía).
+  const filter = { cost: requestedCost }
+
+  if (typeof payload.shipping?.label === 'string' && payload.shipping.label.trim()) {
+    filter.label = payload.shipping.label.trim()
+  }
+
+  const shippingOption = await ShippingOption.findOne(filter)
+
+  if (!shippingOption) {
+    const error = new Error('La opción de envío seleccionada no es válida.')
+    error.statusCode = 400
+    throw error
+  }
+
+  return {
+    label: shippingOption.label,
+    cost: shippingOption.cost,
+  }
 }
 
 async function listOrders(request, response) {
@@ -73,12 +141,31 @@ async function getOrder(request, response) {
 async function createOrder(request, response) {
   const body = bodyOf(request)
   const payload = sanitizeOrderBody(body)
-  const items = Array.isArray(payload.items) ? payload.items : []
-  const totals = computeTotals(body, items)
+  const rawItems = Array.isArray(payload.items) ? payload.items : []
+  const items = await resolveOrderItems(rawItems)
+
+  if (items.length === 0) {
+    return response.status(400).json({
+      message: 'La orden debe incluir al menos un producto.',
+    })
+  }
+
+  // El dueño de la orden SIEMPRE es el usuario autenticado; cualquier
+  // 'user' enviado en el body se ignora.
+  const user = request.user.id
+
+  // Envío validado contra la colección shippingOptions (costo real).
+  const shipping = await resolveShipping(payload)
+
+  // computeTotals recibe el payload saneado y los ítems resueltos contra BD.
+  const totals = computeTotals({ ...payload, shipping }, items)
 
   const order = await Order.create({
-    ...payload,
+    user,
     items,
+    shipping,
+    payment: payload.payment,
+    promotionCode: payload.promotionCode,
     ...totals,
   })
 
@@ -99,6 +186,12 @@ async function updateOrder(request, response) {
   }
 
   if (body.status !== undefined) {
+    if (!ORDER_STATUSES.includes(body.status)) {
+      return response.status(400).json({
+        message: 'El estado de la orden enviado no es válido.',
+      })
+    }
+
     order.status = body.status
   }
 

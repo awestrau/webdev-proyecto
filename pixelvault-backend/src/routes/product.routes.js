@@ -10,13 +10,14 @@ const {
   updateProductStatus,
 } = require('../controllers/product.controller')
 const uploadProductImages = require('../middleware/upload.middleware')
+const { requireAdmin } = require('../middleware/auth.middleware')
 const validateObjectId = require('../middleware/validateObjectId.middleware')
 const asyncHandler = require('../utils/asyncHandler')
 
 const router = express.Router()
 
 router.get('/', asyncHandler(listProducts))
-router.post('/', uploadProductImages, asyncHandler(createProduct))
+router.post('/', requireAdmin, uploadProductImages, asyncHandler(createProduct))
 
 router.get(
   '/images/:imageId',
@@ -27,17 +28,20 @@ router.get(
 router.get('/:id', validateObjectId(), asyncHandler(getProduct))
 router.put(
   '/:id',
+  requireAdmin,
   validateObjectId(),
   uploadProductImages,
   asyncHandler(updateProduct),
 )
 router.patch(
   '/:id/status',
+  requireAdmin,
   validateObjectId(),
   asyncHandler(updateProductStatus),
 )
 router.delete(
   '/:id',
+  requireAdmin,
   validateObjectId(),
   asyncHandler(deactivateProduct),
 )

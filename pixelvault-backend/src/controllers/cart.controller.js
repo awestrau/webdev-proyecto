@@ -3,7 +3,9 @@ const mongoose = require('mongoose')
 const Cart = require('../models/Cart.model')
 const Product = require('../models/Product.model')
 
-const cartFields = new Set(['user', 'items'])
+// 'user' NO está en el whitelist a propósito: el dueño del carrito siempre
+// se toma del token (request.user.id), nunca del body del cliente.
+const cartFields = new Set(['items'])
 
 function bodyOf(request) {
   return request.body ?? {}
@@ -74,21 +76,10 @@ async function getCart(request, response) {
 
 async function createCart(request, response) {
   const body = sanitizeCartBody(bodyOf(request))
-  const { user, items } = body
-
-  if (!user) {
-    return response.status(400).json({
-      message: 'El carrito debe indicar el identificador del usuario.',
-    })
-  }
-
-  if (!mongoose.isObjectIdOrHexString(user)) {
-    return response.status(400).json({
-      message: 'El identificador de usuario enviado no es válido.',
-    })
-  }
-
-  const incomingItems = normalizeItems(items)
+  // El dueño del carrito SIEMPRE es el usuario autenticado; cualquier
+  // 'user' enviado en el body se ignora.
+  const user = request.user.id
+  const incomingItems = normalizeItems(body.items)
   const validItems = incomingItems.filter((item) => {
     return mongoose.isObjectIdOrHexString(item?.product)
   })
@@ -152,17 +143,25 @@ async function updateCart(request, response) {
     })
   }
 
+  const existingCart = await Cart.findById(request.params.id)
+
+  if (!existingCart) {
+    return response.status(404).json({
+      message: 'No se encontró el carrito solicitado.',
+    })
+  }
+
+  if (String(existingCart.user) !== String(request.user.id)) {
+    return response.status(403).json({
+      message: 'No podés modificar el carrito de otro usuario.',
+    })
+  }
+
   const cart = await Cart.findByIdAndUpdate(
     request.params.id,
     { items: validItems },
     { returnDocument: 'after', runValidators: true },
   )
-
-  if (!cart) {
-    return response.status(404).json({
-      message: 'No se encontró el carrito solicitado.',
-    })
-  }
 
   return response.json({
     message: 'Carrito actualizado correctamente.',

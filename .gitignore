@@ -1,2 +1,10 @@
 # Playwright MCP artifacts (verificaciones de subagentes)
 .playwright-mcp/
+
+# Secretos y configuracion local (MONGO_URI, JWT_SECRET, etc.)
+.env
+.env.local
+# Cubre futuros .env.development / .env.production, sin ignorar los
+# .env.example versionados en el repo.
+.env.*
+!.env.example

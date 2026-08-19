@@ -76,10 +76,42 @@ async function getUser(request, response) {
 }
 
 async function createUser(request, response) {
-  const user = await User.create(buildCreatePayload(bodyOf(request)))
+  // El registro público siempre crea clientes: se ignora cualquier role del body.
+  const user = await User.create({
+    ...buildCreatePayload(bodyOf(request)),
+    role: 'customer',
+  })
 
   response.status(201).json({
     message: 'Usuario registrado correctamente.',
+    user: sanitizeUser(user),
+  })
+}
+
+async function createAdminUser(request, response) {
+  const { name, email, password } = bodyOf(request)
+
+  if (!name || !email || !password) {
+    return response.status(400).json({
+      message: 'Debes enviar nombre, correo electrónico y contraseña.',
+    })
+  }
+
+  if (String(password).length < 8) {
+    return response.status(400).json({
+      message: 'La contraseña debe tener al menos 8 caracteres.',
+    })
+  }
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+    role: 'admin',
+  })
+
+  return response.status(201).json({
+    message: 'Administrador registrado correctamente.',
     user: sanitizeUser(user),
   })
 }
@@ -163,10 +195,12 @@ async function updateUserPassword(request, response) {
 }
 
 module.exports = {
+  createAdminUser,
   createUser,
   deleteUser,
   getUser,
   listUsers,
+  sanitizeUser,
   updateUser,
   updateUserPassword,
 }

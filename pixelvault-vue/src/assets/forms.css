@@ -187,6 +187,26 @@
   cursor: not-allowed;
 }
 
+/* Mensajes de alerta (éxito y error de la API) */
+.form-alert {
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 3px solid var(--form-border);
+  box-shadow: 3px 3px 0 var(--form-border);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.form-alert--success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.form-alert--danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
 /* Footer del formulario */
 .form-footer {
   margin-top: 1.5rem;

@@ -4,12 +4,21 @@ import {
   onMounted,
   ref,
 } from 'vue'
+import { useRouter } from 'vue-router'
 
 import AdminProductMetrics from '../components/admin/AdminProductMetrics.vue'
 import AdminProductSection from '../components/admin/AdminProductSection.vue'
 import AdminSidebar from '../components/admin/AdminSidebar.vue'
+import AdminUsersSection from '../components/admin/AdminUsersSection.vue'
+import AdminCategoriesSection from '../components/admin/AdminCategoriesSection.vue'
+import AdminOrdersSection from '../components/admin/AdminOrdersSection.vue'
 
+import { useAuth } from '../composables/useAuth'
 import { useProducts } from '../composables/useProducts'
+
+const router = useRouter()
+
+const { logout } = useAuth()
 
 const {
   allProducts,
@@ -23,6 +32,8 @@ const {
   setProductStatus,
   clearProductsError,
 } = useProducts()
+
+const activeSection = ref('products')
 
 const feedbackMessage = ref('')
 const feedbackType = ref('success')
@@ -40,6 +51,19 @@ function showFeedback(message, type = 'success') {
   feedbackTimer = window.setTimeout(() => {
     feedbackMessage.value = ''
   }, 3500)
+}
+
+function handleSelectSection(sectionId) {
+  activeSection.value = sectionId
+}
+
+function handleFeedback(payload) {
+  showFeedback(payload.message, payload.type)
+}
+
+function handleLogout() {
+  logout()
+  router.push('/')
 }
 
 async function handleAddProduct(productData) {
@@ -112,18 +136,16 @@ onMounted(() => {
       </h1>
 
       <div class="row g-3 align-items-stretch">
-        <AdminSidebar />
+        <AdminSidebar
+          :active-section="activeSection"
+          @select="handleSelectSection"
+          @logout="handleLogout"
+        />
 
         <section
           class="col-12 col-lg"
           aria-label="Contenido administrativo"
         >
-          <AdminProductMetrics
-            :product-count="allProducts.length"
-            :category-count="allCategories.length"
-            :platform-count="allPlatforms.length"
-          />
-
           <div
             v-if="feedbackMessage"
             class="alert"
@@ -134,25 +156,49 @@ onMounted(() => {
             {{ feedbackMessage }}
           </div>
 
-          <div v-if="loadingProducts" class="admin-api-state p-5 text-center" role="status">
-            Cargando inventario desde MongoDB...
-          </div>
+          <template v-if="activeSection === 'products'">
+            <AdminProductMetrics
+              :product-count="allProducts.length"
+              :category-count="allCategories.length"
+              :platform-count="allPlatforms.length"
+            />
 
-          <div v-else-if="productsError" class="alert alert-danger" role="alert">
-            <p class="mb-3">{{ productsError }}</p>
-            <button class="nes-btn is-primary" type="button" @click="retryProducts">
-              Reintentar conexión
-            </button>
-          </div>
+            <div v-if="loadingProducts" class="admin-api-state p-5 text-center" role="status">
+              Cargando inventario desde MongoDB...
+            </div>
 
-          <AdminProductSection
-            v-else
-            :products="allProducts"
-            :categories="allCategories"
-            :platforms="allPlatforms"
-            @add-product="handleAddProduct"
-            @update-product="handleUpdateProduct"
-            @toggle-product-status="handleToggleProductStatus"
+            <div v-else-if="productsError" class="alert alert-danger" role="alert">
+              <p class="mb-3">{{ productsError }}</p>
+
+              <button class="nes-btn is-primary" type="button" @click="retryProducts">
+                Reintentar conexión
+              </button>
+            </div>
+
+            <AdminProductSection
+              v-else
+              :products="allProducts"
+              :categories="allCategories"
+              :platforms="allPlatforms"
+              @add-product="handleAddProduct"
+              @update-product="handleUpdateProduct"
+              @toggle-product-status="handleToggleProductStatus"
+            />
+          </template>
+
+          <AdminUsersSection
+            v-else-if="activeSection === 'users'"
+            @feedback="handleFeedback"
+          />
+
+          <AdminCategoriesSection
+            v-else-if="activeSection === 'categories'"
+            @feedback="handleFeedback"
+          />
+
+          <AdminOrdersSection
+            v-else-if="activeSection === 'orders'"
+            @feedback="handleFeedback"
           />
         </section>
       </div>

@@ -15,9 +15,17 @@ import productsIcon from '../assets/icons/products.svg'
 import logoImage from '../assets/images/logo.jpg'
 
 import { useProductFilters } from '../composables/useProductFilters'
+import { useAuth } from '../composables/useAuth'
 
 const router = useRouter()
 const sideMenuElement = ref(null)
+
+const {
+    isAuthenticated,
+    isAdmin,
+    currentUser,
+    logout,
+} = useAuth()
 
 const {
     searchText,
@@ -26,50 +34,102 @@ const {
     clearSearch,
 } = useProductFilters()
 
-const navigationActions = [
-    {
-        id: 'saved',
-        label: 'Guardados',
-        ariaLabel: 'Ver productos guardados',
-        to: {
-            name: 'favorites',
-        },
-        icon: savedIcon,
-    },
-    {
-        id: 'cart',
-        label: 'Carrito',
-        ariaLabel: 'Ver carrito',
-        to: {
-            name: 'cart',
-        },
-        icon: cartIcon,
-    },
-    {
-        id: 'login',
-        label: 'Ingresar',
-        ariaLabel: 'Iniciar sesión',
-        to: '/login',
-        icon: userIcon,
-    },
-]
+function handleLogout() {
+    logout()
+    closeNavigationMenu()
+    router.push('/')
+}
 
-const sideNavigationItems = [
-    {
-        id: 'products',
-        label: 'Catálogo de productos',
-        ariaLabel: 'Ver todos los productos',
-        to: { name: 'products' },
-        icon: productsIcon,
-    },
-    {
-        id: 'admin',
-        label: 'Panel de Administrador',
-        ariaLabel: 'Abrir el panel de administrador',
-        to: { name: 'admin-portal' },
-        icon: userIcon,
-    },
-]
+const navigationActions = computed(() => {
+    const actions = [
+        {
+            id: 'saved',
+            label: 'Guardados',
+            ariaLabel: 'Ver productos guardados',
+            to: {
+                name: 'favorites',
+            },
+            icon: savedIcon,
+        },
+        {
+            id: 'cart',
+            label: 'Carrito',
+            ariaLabel: 'Ver carrito',
+            to: {
+                name: 'cart',
+            },
+            icon: cartIcon,
+        },
+    ]
+
+    if (isAuthenticated.value) {
+        const adminName = isAdmin.value && currentUser.value?.name
+            ? currentUser.value.name
+            : ''
+
+        actions.push({
+            id: 'logout',
+            label: 'Cerrar sesión',
+            ariaLabel: adminName
+                ? `Cerrar sesión de ${adminName}`
+                : 'Cerrar sesión',
+            icon: userIcon,
+            handler: handleLogout,
+        })
+    } else {
+        actions.push({
+            id: 'login',
+            label: 'Ingresar',
+            ariaLabel: 'Iniciar sesión',
+            to: '/login',
+            icon: userIcon,
+        })
+    }
+
+    return actions
+})
+
+const sideNavigationItems = computed(() => {
+    const items = [
+        {
+            id: 'products',
+            label: 'Catálogo de productos',
+            ariaLabel: 'Ver todos los productos',
+            to: { name: 'products' },
+            icon: productsIcon,
+        },
+    ]
+
+    if (isAdmin.value) {
+        items.push({
+            id: 'admin',
+            label: 'Panel de Administrador',
+            ariaLabel: 'Abrir el panel de administrador',
+            to: { name: 'admin-portal' },
+            icon: userIcon,
+        })
+    }
+
+    return items
+})
+
+function resolveActionBindings(action) {
+    if (action.to) {
+        return { to: action.to }
+    }
+
+    if (action.href) {
+        return { href: action.href }
+    }
+
+    return { type: 'button' }
+}
+
+function handleActionClick(action) {
+    if (typeof action.handler === 'function') {
+        action.handler()
+    }
+}
 
 const searchModel = computed({
     get() {
@@ -161,12 +221,19 @@ onBeforeUnmount(() => {
 
                 <!-- Acciones -->
                 <div class="nav-actions ms-auto ms-lg-0 d-flex align-items-center gap-2 gap-sm-3">
-                    <component :is="action.to ? RouterLink : 'a'" v-for="action in navigationActions" :key="action.id"
-                        v-bind="action.to
-                            ? { to: action.to }
-                            : { href: action.href }
-                            " class="nav-action-link d-flex flex-column align-items-center"
-                        :aria-label="action.ariaLabel">
+                    <span v-if="isAdmin" class="admin-tag nes-container is-rounded" role="status">
+                        Admin{{ currentUser?.name ? ': ' + currentUser.name : '' }}
+                    </span>
+
+                    <component
+                        :is="action.to ? RouterLink : (action.handler ? 'button' : 'a')"
+                        v-for="action in navigationActions"
+                        :key="action.id"
+                        v-bind="resolveActionBindings(action)"
+                        class="nav-action-link d-flex flex-column align-items-center"
+                        :aria-label="action.ariaLabel"
+                        @click="handleActionClick(action)"
+                    >
                         <span class="nav-action-icon-box d-inline-flex align-items-center justify-content-center"
                             aria-hidden="true">
                             <img :src="action.icon" alt="" class="nav-action-icon">
@@ -372,6 +439,24 @@ onBeforeUnmount(() => {
     border: 3px solid var(--header-border);
     background-color: #fff;
     box-shadow: 3px 3px 0 var(--header-border);
+}
+
+.admin-tag {
+    padding: 0.35rem 0.55rem;
+    border: 3px solid var(--header-border);
+    border-radius: 0;
+    background-color: var(--header-highlight);
+    color: #111;
+    font-size: 0.5rem;
+    font-weight: bold;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+@media (max-width: 575.98px) {
+    .admin-tag {
+        display: none;
+    }
 }
 
 .nav-action-icon {

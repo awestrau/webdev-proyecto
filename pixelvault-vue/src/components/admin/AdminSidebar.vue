@@ -1,31 +1,45 @@
 <script setup>
 import productsIcon from '../../assets/icons/products.svg'
 import userIcon from '../../assets/icons/user.svg'
+import categoriesIcon from '../../assets/icons/categories.svg'
 import cartIcon from '../../assets/icons/cart.svg'
-import progressIcon from '../../assets/icons/progress.svg'
 import savedIcon from '../../assets/icons/saved.svg'
 import searchIcon from '../../assets/icons/search.svg'
 import menuIcon from '../../assets/icons/menu.svg'
 import removeIcon from '../../assets/icons/remove.svg'
+
+const props = defineProps({
+  activeSection: {
+    type: String,
+    default: 'products',
+  },
+})
+
+const emit = defineEmits([
+  'select',
+  'logout',
+])
 
 const navigationItems = [
   {
     id: 'products',
     label: 'Productos',
     icon: productsIcon,
-    active: true,
   },
   {
     id: 'users',
     label: 'Usuarios',
     icon: userIcon,
-    disabled: true,
+  },
+  {
+    id: 'categories',
+    label: 'Categorías',
+    icon: categoriesIcon,
   },
   {
     id: 'orders',
     label: 'Órdenes',
     icon: cartIcon,
-    disabled: true,
   },
   {
     id: 'discounts',
@@ -46,6 +60,7 @@ const secondaryItems = [
     id: 'settings',
     label: 'Configuraciones',
     icon: menuIcon,
+    disabled: true,
   },
   {
     id: 'logout',
@@ -53,6 +68,16 @@ const secondaryItems = [
     icon: removeIcon,
   },
 ]
+
+function isActive(item) {
+  return item.id === props.activeSection
+}
+
+function handleSecondaryClick(item) {
+  if (item.id === 'logout') {
+    emit('logout')
+  }
+}
 </script>
 
 <template>
@@ -69,12 +94,13 @@ const secondaryItems = [
                d-inline-flex align-items-center gap-2 flex-shrink-0
                px-3 py-3 text-start small"
         :class="{
-          active: item.active,
-          'border border-3 border-primary': item.active,
+          active: isActive(item),
+          'border border-3 border-primary': isActive(item),
         }"
         type="button"
         :disabled="item.disabled"
-        :aria-pressed="item.active ? 'true' : 'false'"
+        :aria-pressed="isActive(item) ? 'true' : 'false'"
+        @click="emit('select', item.id)"
       >
         <img
           :src="item.icon"
@@ -105,7 +131,8 @@ const secondaryItems = [
                d-inline-flex align-items-center gap-2 flex-shrink-0
                px-3 py-3 text-start small"
         type="button"
-        disabled
+        :disabled="item.disabled"
+        @click="handleSecondaryClick(item)"
       >
         <img
           :src="item.icon"

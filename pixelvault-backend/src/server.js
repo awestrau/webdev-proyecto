@@ -1,4 +1,8 @@
-require('dotenv').config()
+// El .env con MONGO_URI/JWT_SECRET vive en la RAÍZ del repo (/admin/.env);
+// desde src/ se resuelve con ../../.env (no depende del cwd).
+require('dotenv').config({
+  path: require('path').resolve(__dirname, '../../.env'),
+})
 
 const mongoose = require('mongoose')
 

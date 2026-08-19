@@ -12,6 +12,7 @@ const categoryRoutes = require('./routes/category.routes')
 const userRoutes = require('./routes/user.routes')
 const orderRoutes = require('./routes/order.routes')
 const cartRoutes = require('./routes/cart.routes')
+const authRoutes = require('./routes/auth.routes')
 
 function getAllowedOrigins() {
   return String(
@@ -62,6 +63,7 @@ app.use('/api/categories', categoryRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/carts', cartRoutes)
+app.use('/api/auth', authRoutes)
 
 app.use(notFoundHandler)
 app.use(errorHandler)
