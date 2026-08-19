@@ -12,6 +12,9 @@ router.get('/', requireAdmin, asyncHandler(controller.listOrders))
 // nombre del usuario del token (request.user.id).
 router.post('/', requireAuth, asyncHandler(controller.createOrder))
 router.get('/:id', requireAdmin, validateObjectId(), asyncHandler(controller.getOrder))
+// GET /:id/invoice requiere un usuario autenticado: downloadOrderInvoice()
+// del frontend envía el token vía header Authorization: Bearer.
+router.get('/:id/invoice', requireAuth, validateObjectId(), asyncHandler(controller.getOrderInvoice))
 router.put('/:id', requireAdmin, validateObjectId(), asyncHandler(controller.updateOrder))
 router.delete('/:id', requireAdmin, validateObjectId(), asyncHandler(controller.deleteOrder))
 

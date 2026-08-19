@@ -15,6 +15,10 @@ import shippingOptionsData from '../data/shippingOptions.json'
 import paymentMethodsData from '../data/paymentMethods.json'
 import { formatCurrency } from '../utils/formatCurrency'
 
+import {
+  createOrder,
+  downloadOrderInvoice,
+} from '../services/api'
 import { useCart } from '../composables/useCart'
 
 const router = useRouter()
@@ -239,7 +243,20 @@ function continueToPayment() {
 
 //SECCION PAGO
 const selectedPaymentMethodId = ref(null)
+const orderError = ref('')
 //Funciones
+const selectedPaymentMethod = computed(() => {
+    return paymentMethods.value.find((paymentMethod) => {
+        return paymentMethod.id === selectedPaymentMethodId.value
+    }) ?? null
+})
+
+function getOrderErrorMessage(error) {
+    return error instanceof Error
+        ? error.message
+        : 'No se pudo registrar la orden ni descargar la factura. Inténtalo de nuevo.'
+}
+
 function selectPaymentMethod(paymentMethodId) {
     const exists = paymentMethods.value.some((paymentMethod) => {
         return paymentMethod.id === paymentMethodId
@@ -271,7 +288,80 @@ function addPaymentMethod(paymentMethodData) {
     selectedPaymentMethodId.value = newPaymentMethod.id
 }
 
-function handleOrderCompleted(completedOrder) {
+async function handleOrderCompleted(completedOrder) {
+    orderError.value = ''
+
+    const selectedAddress = addresses.value.find((address) => {
+        return address.id === selectedAddressId.value
+    }) ?? null
+
+    const orderPayload = {
+        items: cartItems.value.map((item) => ({
+            product: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            platform: item.platform,
+            image: item.image ?? item.images?.[0],
+        })),
+        shipping: {
+            label: selectedShipping.value?.label ?? '',
+            cost: selectedShipping.value?.cost ?? 0,
+        },
+        payment: selectedPaymentMethod.value
+            ? {
+                brand: selectedPaymentMethod.value.brand,
+                last4: selectedPaymentMethod.value.last4,
+                cardholderName: selectedPaymentMethod.value.cardholderName,
+                expiry: selectedPaymentMethod.value.expiry,
+            }
+            : undefined,
+        shippingAddress: selectedAddress
+            ? {
+                label: selectedAddress.label,
+                country: selectedAddress.country,
+                phone: selectedAddress.phone,
+                addressLine: selectedAddress.addressLine,
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                zipCode: selectedAddress.zipCode,
+            }
+            : undefined,
+        promotionCode: appliedCoupon.value
+            ? {
+                code: appliedCoupon.value.code,
+                type: appliedCoupon.value.type,
+                value: appliedCoupon.value.value,
+            }
+            : undefined,
+        invoiceNumber: completedOrder.orderNumber,
+        subtotal: subtotal.value,
+        shippingCost: shippingCost.value,
+        discount: discountAmount.value,
+        total: checkoutTotal.value,
+    }
+
+    try {
+        const order = await createOrder(orderPayload)
+
+        /*
+         * El backend serializa la orden cruda de Mongoose: el
+         * identificador llega como `_id` (no como `id`, ya que no hay
+         * presenter de órdenes). Se usa `_id` con fallback defensivo.
+         */
+        await downloadOrderInvoice(
+            order._id ?? order.id,
+            `factura-${completedOrder.orderNumber}.pdf`,
+        )
+    } catch (error) {
+        /*
+         * Si la orden o la factura fallan, se informa al usuario y se
+         * conserva el carrito y el estado del checkout para reintentar.
+         */
+        orderError.value = getOrderErrorMessage(error)
+        return
+    }
+
     clearCart()
     removeCoupon()
 
@@ -290,6 +380,17 @@ function handleOrderCompleted(completedOrder) {
 
     <main class="cart-page flex-grow-1">
         <div class="container cart-page__container">
+            <!-- Error al registrar la orden o descargar la factura -->
+            <div v-if="orderError" class="order-error-banner nes-container is-rounded mb-4" role="alert"
+                aria-live="polite">
+                <p class="order-error-banner__text mb-2">
+                    {{ orderError }}
+                </p>
+                <button class="nes-btn is-error" type="button" @click="orderError = ''">
+                    Entendido
+                </button>
+            </div>
+
             <div class="row">
                 <CheckoutProgress :current-step="currentStep" />
             </div>
@@ -408,6 +509,38 @@ function handleOrderCompleted(completedOrder) {
     min-height: 220px;
     background-color: #fff;
     box-shadow: 4px 4px 0 #111;
+}
+
+.order-error-banner {
+    background-color: #fff;
+    color: #151515;
+    box-shadow: 4px 4px 0 #111;
+}
+
+.order-error-banner__text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.order-error-banner .nes-btn.is-error {
+    margin: 0;
+    padding: 0.6rem 0.9rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    background-color: #e45b61;
+    color: #fff;
+}
+
+.order-error-banner .nes-btn.is-error::after {
+    box-shadow: inset -4px -4px #8c2022;
+}
+
+.order-error-banner .nes-btn.is-error:hover,
+.order-error-banner .nes-btn.is-error:focus-visible {
+    background-color: #ce372b;
+    color: #fff;
 }
 
 .ad-banner.nes-container {

@@ -276,6 +276,18 @@ export async function toggleCategoryStatus(categoryId, status) {
 
 // --- Órdenes ---
 
+export async function createOrder(orderPayload) {
+  const data = await apiFetch('/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderPayload),
+  })
+
+  return data.order
+}
+
 export async function getOrders() {
   return apiFetch('/orders')
 }
@@ -294,6 +306,53 @@ export async function deleteOrder(orderId) {
   return apiFetch(`/orders/${orderId}`, {
     method: 'DELETE',
   })
+}
+
+export async function downloadOrderInvoice(orderId, filename) {
+  // La descarga de la factura usa fetch directo (debe leer el body como blob,
+  // no como JSON), pero igual envía el token JWT: el endpoint de factura está
+  // protegido con requireAuth en el backend.
+  const headers = {
+    Accept: 'application/pdf',
+  }
+  const authToken = getToken()
+
+  if (authToken) {
+    headers.Authorization = `Bearer ${authToken}`
+  }
+
+  const response = await fetch(
+    `${API_URL}/orders/${orderId}/invoice`,
+    { headers },
+  )
+
+  if (!response.ok) {
+    let message = `La API respondió con el estado HTTP ${response.status}.`
+
+    try {
+      const data = await response.json()
+      message = data?.message
+        || data?.msj
+        || message
+    } catch {
+      // La respuesta de error no es JSON (p. ej. una caída de red o un
+      // proxy); se conserva el mensaje basado en el estado HTTP.
+    }
+
+    throw new Error(message)
+  }
+
+  const blob = await response.blob()
+  const objectUrl = URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = objectUrl
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+
+  URL.revokeObjectURL(objectUrl)
 }
 
 export { API_URL }
